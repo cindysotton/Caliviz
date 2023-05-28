@@ -1,0 +1,9 @@
+streamlit
+streamlit_option_menu 
+pandas
+matplotlib 
+plotly 
+bokeh 
+scikit-learn 
+seaborn 
+Pillow
