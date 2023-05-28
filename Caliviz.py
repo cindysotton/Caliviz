@@ -11,7 +11,7 @@ import matplotlib.colors as colors
 st.set_page_config(page_title='Caliviz',
                     # icon à modifier
                    page_icon='🌽', 
-                   layout="centered", initial_sidebar_state="expanded",
+                   layout="wide", initial_sidebar_state="expanded",
     )
 
 
