@@ -159,7 +159,7 @@ if selected == "Notre alimentation":
     with col4:
         substances = st.selectbox(
         "Choix du groupe de substances",
-        ('Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Contaminants inorg et minéraux','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
+        ('Contaminants inorg et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
 
     if substances == "Acrylamide":
