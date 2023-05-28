@@ -49,7 +49,10 @@ selected = option_menu(None, ['Présentation du projet','Risques des substances'
             "nav-link": {
                 "font-size": "13px",
                 "text-align": "center",
-                }})
+              "--hover-color": "#9400D3",
+                }
+              "nav-link-selected": {"background-color": "#9400D3"},})
+
 
 
 # Présentation du projet
