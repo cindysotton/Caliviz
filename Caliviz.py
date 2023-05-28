@@ -12,8 +12,6 @@ st.set_page_config(page_title='Caliviz',
                     # icon à modifier
                    page_icon='🌽', 
                    layout="wide",
-                   base="light",
-                   primaryColor="#5770be",
                    initial_sidebar_state="expanded",
     )
 
