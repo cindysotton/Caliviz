@@ -391,67 +391,13 @@ if selected == 'Données - Méthodologie':
     st.subheader("Retraitement des données par nos équipes")
     
     st.markdown("Aperçu de nos données par groupe d'aliments")
-    st.write(df_ino.head(10))
-    #@st.cache
-    def convert_df(df):
-        # IMPORTANT: Cache the conversion to prevent computation on every rerun
-        return df_groupe.to_csv().encode('utf-8')
 
-    csv = convert_df('Contamination_par_groupe')
-
-    st.download_button(
-        label="Télécharger le fichier",
-        data=csv,
-        file_name='Contamination_par_groupe.csv',
-        mime='text/csv',
-    )
     st.markdown("Aperçu de nos données globales")
-    st.write(df_aliments.head(10))
-    def convert_df(df):
-        # IMPORTANT: Cache the conversion to prevent computation on every rerun
-        return df_aliments.to_csv().encode('utf-8')
 
-    csv = convert_df('Contamination_par_aliment')
-
-    st.download_button(
-        label="Télécharger le fichier",
-        data=csv,
-        file_name='Contamination_par_aliment',
-        mime='text/csv',
-    ) 
      
 
 # Condlusion
 if selected == "Contact":
     st.markdown("")
     st.markdown("")
-    # Liste des substances
-    substances_ino = LB_pivot_ino.columns[4:]
 
-    # Création du tableau de valeurs normalisées par substance
-    normalized_values = (LB_pivot_ino[substances_ino] - LB_pivot_ino[substances_ino].min()) / (LB_pivot_ino[substances_ino].max() - LB_pivot_ino[substances_ino].min())
-
-    # Création du tableau de couleurs en utilisant la colormap inversée
-    cmap = "RdYlGn"  # Choisissez la colormap RdYlGn
-    reversed_cmap = plt.cm.get_cmap(cmap)
-    reversed_cmap = colors.ListedColormap(np.flipud(reversed_cmap(np.linspace(0, 1, 256))))
-    colors_array = reversed_cmap(normalized_values)
-
-    # Création du tableau avec un nuancier de couleur
-    fig, ax = plt.subplots(figsize=(20, 15))  # Ajustez la taille du graphique selon vos besoins
-    table = ax.table(cellText=np.round(LB_pivot_ino[substances_ino].values, decimals=3),
-                    cellColours=colors_array, colLabels=substances_ino,
-                    rowLabels=LB_pivot_ino["Groupe"], loc="center",
-                    cellLoc="center")
-
-    # Configuration des axes
-    ax.axis("off")
-
-    # Espacement des lignes et colonnes
-    table.scale(1, 2)
-
-    # Ajuster la taille de la police du texte du tableau
-    table.set_fontsize(30)
-
-    # Affichage du tableau
-    plt.show()
