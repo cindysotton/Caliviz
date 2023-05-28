@@ -20,11 +20,11 @@ st.set_page_config(page_title='Caliviz',
 # Famille des Contaminents Inorg et Mineraux
 df_ino = pd.read_csv('Reformatage_Conta_Inorg_Mineraux_aliment.csv')
 # LB = hypithèse basse
-LB_pivot_ino = pd.read_csv('LB_Pivot_Inorg_Minéraux.csv')
+LB_pivot_ino = pd.read_csv('LB_Pivot_Inorg_Mineraux.csv')
 # MB = hypithèse moyenne
-MB_pivot_ino = pd.read_csv('MB_Pivot_Inorg_Minéraux.csv')
+MB_pivot_ino = pd.read_csv('MB_Pivot_Inorg_Mineraux.csv')
 # UB = hypithèse haute
-UB_pivot_ino = pd.read_csv('UB_Pivot_Inorg_Minéraux.csv')
+UB_pivot_ino = pd.read_csv('UB_Pivot_Inorg_Mineraux.csv')
 
 
 
