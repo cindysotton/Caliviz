@@ -188,6 +188,8 @@ if selected == "Notre alimentation":
 
         with tab1:
             st.markdown("")
+            image = Image.open('Heatmap_ino_LB.png')
+            st.image(image, use_column_width=True)
 
             # Filtrer les substances
             option_substances_ino_lb = st.multiselect(
@@ -235,6 +237,8 @@ if selected == "Notre alimentation":
 
         with tab2:
             st.markdown("")
+            image = Image.open('Heatmap_ino_MB.png')
+            st.image(image, use_column_width=True)
 
                         # Filtrer les substances
             option_substances_ino_mb = st.multiselect(
@@ -282,6 +286,8 @@ if selected == "Notre alimentation":
     
         with tab3:
             st.markdown("")
+            image = Image.open('Heatmap_ino_UB.png')
+            st.image(image, use_column_width=True)
 
             # Filtrer les substances
             option_substances_ino_ub = st.multiselect(
