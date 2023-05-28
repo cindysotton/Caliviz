@@ -224,7 +224,7 @@ if selected == "Notre alimentation":
                 st.warning("Merci de sélectionner au moins une substance et une famille d'aliments")
             else:
                 fig = px.bar(df_filtered, x='LB', y='Groupe', color='Nom Substance', hover_data=['Aliment'])
-                fig.update_xaxes(title='Volume de la substance en µg/g')
+                fig.update_xaxes(title="Volume de la substance en µg/g")
                 fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
                 fig.update_layout(
                     xaxis={'categoryorder': 'total descending'},
@@ -273,7 +273,7 @@ if selected == "Notre alimentation":
                 st.warning("Merci de sélectionner au moins une substance et une famille d'aliments")
             else:
                 fig = px.bar(df_filtered, x='MB', y='Groupe', color='Nom Substance', hover_data=['Aliment'])
-                fig.update_xaxes(title=None)  # Supprime le titre de l'axe x
+                fig.update_xaxes(title="Volume de la substance en µg/g")
                 fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
                 fig.update_layout(
                     xaxis={'categoryorder': 'total descending'},
@@ -322,7 +322,7 @@ if selected == "Notre alimentation":
                 st.warning("Merci de sélectionner au moins une substance et une famille d'aliments")
             else:
                 fig = px.bar(df_filtered, x='UB', y='Groupe', color='Nom Substance', hover_data=['Aliment'])
-                fig.update_xaxes(title=None)  # Supprime le titre de l'axe x
+                fig.update_xaxes(title="Volume de la substance en µg/g")
                 fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
                 fig.update_layout(
                     xaxis={'categoryorder': 'total descending'},
