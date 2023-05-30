@@ -32,7 +32,7 @@ MB_pivot_ino = pd.read_csv('MB_Pivot_Inorg_Mineraux.csv')
 UB_pivot_ino = pd.read_csv('UB_Pivot_Inorg_Mineraux.csv')
 
 
-# a modifier
+# couleur des onglets du menu
 flierprops = dict(marker="X", markerfacecolor='orange', markersize=12,
                   linestyle='none')
 
@@ -43,7 +43,7 @@ width = 80
 st.image(image_logo, width=width)
 
 # 2. horizontal menu
-selected = option_menu(None, ['Présentation du projet','Risques des substances','Contamination','Contribution','Données - Méthodologie','Contact'],
+selected = option_menu(None, ['Présentation du projet','Les substances','Contamination','Contribution','Données - Méthodologie','Contact'],
     icons=['house',"eyedropper",'basket','funnel','clipboard-data','envelope-fill'],
     menu_icon="cast", 
     default_index=0, 
@@ -119,7 +119,7 @@ if selected == "Présentation du projet":
 
 
 # Les substances et leurs risques
-if selected == "Risques des substances":
+if selected == "Les substances":
     st.markdown("Comprendre les risques")
 
     tab1, tab2, tab3, tab4, tab5, tab6, tab7, tab8, tab9, tab10 = st.tabs(["Risque 1", "Risque 2","Risque 3","Risque 4","Risque 5","Risque 6","Risque 7","Risque 8","Risque 9","Risque 10"])
@@ -165,7 +165,7 @@ if selected == "Contamination":
     
     with col1:
         substances = st.selectbox("Choix du groupe de substances",
-        ('Contaminants inorg et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
+        ('Contaminants inorganiques','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
 
     if substances == "Acrylamide":
@@ -183,7 +183,7 @@ if selected == "Contamination":
     if substances == "Bromés":
         st.markdown("")
 
-    if substances == "Contaminants inorg et minéraux":
+    if substances == "Contaminants inorganiques":
 
         st.subheader("Explications des 3 hypothèses :")
         st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
@@ -201,23 +201,164 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
 \n""")
 
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+       
+        modalites = ['Arsenic', 'Plomb', 'Cadmium', 'Aluminium', 'Mercure', 'Antimoine', 'Argent', 'Baryum',
+             'Etain', 'Gallium', 'Germanium', 'Strontium', 'Tellure', 'Vanadium', 'Nickel', 'Cobalt', 'Chrome']
 
+        # Création du nouveau dataframe avec les modalités spécifiées
+        df_ino = df_ino[df_ino['Nom Substance'].isin(modalites)]
+        
         with tab1:
             st.markdown("")
             image = Image.open('Heatmap_ino_LB.png')
             st.image(image, use_column_width=True)
+            
+            col1, col2, col3, col4 = st.columns(4)
+    
+            with col4:
+                
+                choix_substances = df_ino['Nom Substance'].unique()
+                substances= st.selectbox("Choix de la substance", choix_substances)
+                
+                df_ino_groupe = df_ino.groupby(['Groupe', 'Nom Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances]
+
+            
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                xaxis={'categoryorder': 'total descending'},
+                height=700,
+                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
+                margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
+            )
+            st.plotly_chart(fig)
+
+            col1, col2, col3, col4 = st.columns(4)
+    
+            with col4:
+                
+                choix_groupe = df_ino['Groupe'].unique()
+                groupe= st.selectbox("Choix du groupe d'aliment", choix_groupe)
+
+                df_ino_ali = df_ino.groupby(['Aliment','Nom Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+                
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe) & (df_ino_ali['Nom Substance'] == substances)]
+            
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                xaxis={'categoryorder': 'total descending'},
+                height=700,
+                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
+                
+            )
+
+            st.plotly_chart(fig)
             
  
         with tab2:
             st.markdown("")
             image = Image.open('Heatmap_ino_MB.png')
             st.image(image, use_column_width=True)
+          
+            col1, col2, col3, col4 = st.columns(4)
+    
+            with col4:
+                
+                choix_substances = df_ino['Nom Substance'].unique()
+                substances= st.selectbox("Choix de la substance", choix_substances)
+                
+                df_ino_groupe = df_ino.groupby(['Groupe', 'Nom Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances]
+
+            
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                xaxis={'categoryorder': 'total descending'},
+                height=700,
+                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
+                margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
+            )
+            st.plotly_chart(fig)
+
+            col1, col2, col3, col4 = st.columns(4)
+    
+            with col4:
+                
+                choix_groupe = df_ino['Groupe'].unique()
+                groupe= st.selectbox("Choix du groupe d'aliment", choix_groupe)
+
+                df_ino_ali = df_ino.groupby(['Aliment','Nom Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+                
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe) & (df_ino_ali['Nom Substance'] == substances)]
+            
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                xaxis={'categoryorder': 'total descending'},
+                height=700,
+                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
+                
+            )
+
+            st.plotly_chart(fig)
 
   
         with tab3:
             st.markdown("")
             image = Image.open('Heatmap_ino_UB.png')
             st.image(image, use_column_width=True)
+            
+            col1, col2, col3, col4 = st.columns(4)
+    
+            with col4:
+                
+                choix_substances = df_ino['Nom Substance'].unique()
+                substances= st.selectbox("Choix de la substance", choix_substances)
+                
+                df_ino_groupe = df_ino.groupby(['Groupe', 'Nom Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances]
+
+            
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                xaxis={'categoryorder': 'total descending'},
+                height=700,
+                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
+                margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
+            )
+            st.plotly_chart(fig)
+
+            col1, col2, col3, col4 = st.columns(4)
+    
+            with col4:
+                
+                choix_groupe = df_ino['Groupe'].unique()
+                groupe= st.selectbox("Choix du groupe d'aliment", choix_groupe)
+
+                df_ino_ali = df_ino.groupby(['Aliment','Nom Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+                
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe) & (df_ino_ali['Nom Substance'] == substances)]
+            
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                xaxis={'categoryorder': 'total descending'},
+                height=700,
+                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
+                
+            )
+
+            st.plotly_chart(fig)
 
     
     if substances == "Phytoestrogènes":
