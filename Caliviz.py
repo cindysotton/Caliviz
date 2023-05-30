@@ -226,7 +226,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
             fig.update_xaxes(title="Volume de la substance en µg/g")
             fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
             fig.update_layout(
-                xaxis={'categoryorder': 'total descending'},
+                xaxis={'categoryorder': 'total ascending'},
                 height=700,
                 width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
                 margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
