@@ -62,7 +62,7 @@ selected = option_menu(None, ['Présentation du projet','Risques des substances'
 # Présentation du projet
 if selected == "Présentation du projet":
     st.title("Caliviz")
-    st.header("Outil interactif permettant le traitement et la visualisation des substances chimiques auxquelles est exposée la population française via son alimentation")
+    st.header("Outil interactif permettant la visualisation des substances chimiques auxquelles est exposée la population française via son alimentation")
     image = Image.open('alimentation-banderole.jpg')
     st.image(image, use_column_width=True)
     st.subheader("Enjeux")
