@@ -20,16 +20,7 @@ st.set_page_config(page_title='Caliviz',
 
 # Famille des Contaminents Inorg et Mineraux
 df_ino = pd.read_csv('Reformatage_Conta_Inorg_Mineraux_aliment.csv')
-# Contribution LB et UB
-df_contrib_LB_UB = pd.read_excel('Contribution_EAT2_LB_UB.xlsx')
-# Contribution MB
-df_contrib_MB = pd.read_excel('Contribution_EAT2_MB.xlsx')
-# LB = hypithèse basse
-LB_pivot_ino = pd.read_csv('LB_Pivot_Inorg_Mineraux.csv')
-# MB = hypithèse moyenne
-MB_pivot_ino = pd.read_csv('MB_Pivot_Inorg_Mineraux.csv')
-# UB = hypithèse haute
-UB_pivot_ino = pd.read_csv('UB_Pivot_Inorg_Mineraux.csv')
+
 
 
 
@@ -44,7 +35,7 @@ width = 80
 st.image(image_logo, width=width)
 
 # 2. horizontal menu
-selected = option_menu(None, ['Présentation du projet','Risques des substances','Notre alimentation','Contribution','Données - Méthodologie','Contact'],
+selected = option_menu(None, ['Présentation du projet','Risques des substances','Notre alimentation','Exposition','Données - Méthodologie','Contact'],
     icons=['house',"eyedropper",'basket','funnel','clipboard-data','envelope-fill'],
     menu_icon="cast", 
     default_index=0, 
@@ -118,6 +109,7 @@ if selected == "Présentation du projet":
 
 
 
+
 # Les substances et leurs risques
 if selected == "Risques des substances":
     st.markdown("Comprendre les risques")
@@ -166,7 +158,7 @@ if selected == "Notre alimentation":
     with col4:
         substances = st.selectbox(
         "Choix du groupe de substances",
-        ('Contaminants inorganiques et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
+        ('Contaminants inorg et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
 
     if substances == "Acrylamide":
@@ -184,7 +176,7 @@ if selected == "Notre alimentation":
     if substances == "Bromés":
         st.markdown("")
 
-    if substances == "Contaminants inorganiques et minéraux":
+    if substances == "Contaminants inorg et minéraux":
         st.markdown("Explications des différents types d'hypothèses : ")
         st.markdown("texte + préciser les échelles")
 
@@ -200,7 +192,7 @@ if selected == "Notre alimentation":
                 '**Sélectionner les substances que vous souhaitez analyser :**',
                 options=df_ino['Nom Substance'].unique(),
                 default=df_ino['Nom Substance'].unique(),
-                key_contrib='substances_options_ino_lb'
+                key='substances_options_ino_lb'
             )
 
             # Selected substances
@@ -383,152 +375,12 @@ if selected == "Notre alimentation":
     #with tab10:
         st.markdown("")
 
-# Contribution des substances
-if selected == "Contribution":
-    st.subheader("Définition de la notion de contribution")
-    st.markdown("Définition de la contribution")
-    col1, col2, col3, col4 = st.columns(4)
-
-    # Liaison de la fonction de mise à jour à la valeur sélectionnée dans la SelectBox
-    #widgets.interact(update_graph, substance=substance_select)
-
-    with col4:
-        substances = st.selectbox(
-        "Choix du groupe de substances",
-        ('Contaminants inorganiques et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
-
-    if substances == "Acrylamide":
-        st.markdown("")
-
-    if substances == "HAP":
-        st.markdown("")
-    
-    if substances == "Dioxines, PCB":
-        st.markdown("")
-
-    if substances == "Perfluorés":
-        st.markdown("")
-    
-    if substances == "Bromés":
-        st.markdown("")
-
-    if substances == "Contaminants inorganiques et minéraux":
-        st.markdown("Explications des différents types d'hypothèses : ")
-        st.markdown("texte + préciser les échelles")
-
-        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
-
-        with tab1:
-            st.markdown("**texte explicatif substances manquantes**")
-            #SelectBox
-            contrib_option_substances_ino_ub = st.selectbox('Sélectionner les substances que vous souhaitez analyser :',
-                                                df_contrib_LB_UB['Substance'].unique(),
-                                                key='substances_ub')
-
-            # Convertir la valeur unique en liste
-            selected_substances = [contrib_option_substances_ino_ub]
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin(selected_substances)]
-
-            # Selected substances
-            if len(contrib_option_substances_ino_ub) == 0:
-                st.warning('Merci de sélectionner au moins une substance')
-
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_ub])]
-
-            # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments", color='Substance')
-            fig.update_xaxes(title="Contribution de la substance sur 100")
-            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-            fig.update_layout(
-                    yaxis={'categoryorder': 'total ascending'},
-                    legend_title_text='Substances',
-                    #ascending=True
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
-                )
-            st.plotly_chart(fig)
-
-
-        with tab2:
-            st.markdown("")
-           
-             #SelectBox
-            contrib_option_substances_ino_mb = st.selectbox('Sélectionner les substances que vous souhaitez analyser :',
-                                                           df_contrib_MB['Substance'].unique())
-            # Convertir la valeur unique en liste
-            selected_substances = [contrib_option_substances_ino_mb]
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_MB[df_contrib_MB['Substance'].isin(selected_substances)]
-
-            # Selected substances
-            if len(contrib_option_substances_ino_mb) == 0:
-                st.warning('Merci de sélectionner au moins une substance')
-
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_MB[df_contrib_MB['Substance'].isin([contrib_option_substances_ino_mb])]
-
-            # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments", color='Substance')
-            fig.update_xaxes(title="Contribution de la substance sur 100")
-            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-            fig.update_layout(
-                    yaxis={'categoryorder': 'total ascending'},
-                    legend_title_text='Substances',
-                    #ascending=True
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
-                )
-            st.plotly_chart(fig)
-
-        with tab3:
-            st.markdown("**texte explicatif substances manquantes**")
-            
-            #SelectBox
-            contrib_option_substances_ino_lb = st.selectbox('Sélectionner les substances que vous souhaitez analyser :',
-                                                           df_contrib_LB_UB['Substance'].unique())
-            # Convertir la valeur unique en liste
-            selected_substances = [contrib_option_substances_ino_lb]
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin(selected_substances)]
-
-            # Selected substances
-            if len(contrib_option_substances_ino_lb) == 0:
-                st.warning('Merci de sélectionner au moins une substance')
-
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_lb])]
-
-            # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_LB', y="Groupe d'aliments", color='Substance')
-            fig.update_xaxes(title="Contribution de la substance sur 100")
-            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-            fig.update_layout(
-                    yaxis={'categoryorder': 'total ascending'},
-                    legend_title_text='Substances',
-                    #ascending=True
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
-                )
-            st.plotly_chart(fig)
+# Exposition des substances
+if selected == "Exposition":
+    st.markdown("Définition de l'exposition")
 
     
-    if substances == "Phytoestrogènes":
-        st.markdown("")
-    
-    if substances == "Mycotoxines":
-        st.markdown("")
-    
-    if substances == "Additifs":
-        st.markdown("")
 
-    if substances == "Pesticides":
-        st.markdown("")
-    
 
 # Données - Méthodologie
 if selected == 'Données - Méthodologie':
@@ -553,4 +405,3 @@ if selected == 'Données - Méthodologie':
 if selected == "Contact":
     st.markdown("")
     st.markdown("")
-
