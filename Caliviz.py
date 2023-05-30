@@ -109,7 +109,7 @@ if selected == "Présentation du projet":
     with col4:
         st.markdown('<p class="big-font"> 250 000</p><p class="texte">résultalts analytiques</p>', unsafe_allow_html=True)
     with col5:
-        st.markdown('<p class="big-font">9</p><p class="texte">régions</p>', unsafe_allow_html=True)
+        st.markdown('<p class="big-font">8</p><p class="texte">régions</p>', unsafe_allow_html=True)
 
 
 
@@ -185,9 +185,6 @@ if selected == "Contamination":
 
     if substances == "Contaminants inorg et minéraux":
 
-        # Supprimer les lignes "R" si des valeurs sont déjà présentes en "N" pour la variable "Groupe"
-        df_ino = df_ino.groupby('Groupe').apply(lambda x: x[x['Type'] != 'R'] if 'N' in x['Type'].values else x).reset_index(drop=True)
-
         st.subheader("Explications des 3 hypothèses :")
         st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
 
@@ -209,152 +206,18 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
             st.markdown("")
             image = Image.open('Heatmap_ino_LB.png')
             st.image(image, use_column_width=True)
-        
-            st.markdown("*valeurs en µg/g")
-
-            col1, col2, col3 = st.columns(3)
-    
-            with col1:
-                
-                choix_substances = df_ino['Nom Substance'].unique()
-                substances= st.selectbox("Choix de la substance", choix_substances)
-
-                df_filtered_substance = df_ino[df_ino['Nom Substance'] == substances]
-
             
-            fig = px.bar(df_filtered_substance, x='LB', y='Groupe', hover_data=['Aliment'])
-            fig.update_xaxes(title="Volume de la substance en µg/g")
-            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-            fig.update_layout(
-                yaxis={'categoryorder': 'total ascending'},
-                height=700,
-                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
-            )
-            st.plotly_chart(fig)
-
-            col1, col2, col3 = st.columns(3)
-    
-            with col1:
-                
-                choix_groupe = df_ino['Groupe'].unique()
-                groupe= st.selectbox("Choix du groupe d'aliment", choix_groupe)
-
-                df_filtered_groupe = df_ino[df_ino['Groupe'] == groupe]
-            
-            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
-            fig.update_xaxes(title="Volume de la substance en µg/g")
-            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-            fig.update_layout(
-                xaxis={'categoryorder': 'total descending'},
-                height=700,
-                width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                
-            )
-            fig.update_traces(hovertemplate=hover_template)
-
-            st.plotly_chart(fig)
-
-        
-            
-
+ 
         with tab2:
             st.markdown("")
             image = Image.open('Heatmap_ino_MB.png')
             st.image(image, use_column_width=True)
 
-                        # Filtrer les substances
-            option_substances_ino_mb = st.multiselect(
-                '**Sélectionner les substances que vous souhaitez analyser :**',
-                options=df_ino['Nom Substance'].unique(),
-                default=df_ino['Nom Substance'].unique(),
-                key='substances_options_ino_mb'
-            )
-
-            # Selected substances
-            if len(option_substances_ino_mb) == 0:
-                st.warning('Merci de sélectionner au moins une substance')
-
-            # Filtrer les familles d'aliments
-            option_ali_ino_mb = st.multiselect(
-                "**Sélectionner les familles d'aliments que vous souhaitez analyser :**",
-                options=df_ino['Groupe'].unique(),
-                default=df_ino['Groupe'].unique(),
-                key='ali_options_ino_mb'
-            )
-
-            # Selected aliment
-            if len(option_ali_ino_mb) == 0:
-                st.warning("Merci de sélectionner au moins une substance et une famille d'aliments")
-
-
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered = df_ino[(df_ino['Nom Substance'].isin(option_substances_ino_mb)) & (df_ino['Groupe'].isin(option_ali_ino_mb))]
-
-            # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            if len(option_substances_ino_mb) == 0 or len(option_ali_ino_mb) == 0:
-                st.warning("Merci de sélectionner au moins une substance et une famille d'aliments")
-            else:
-                fig = px.bar(df_filtered, x='MB', y='Groupe', color='Nom Substance', hover_data=['Aliment'])
-                fig.update_xaxes(title="Volume de la substance en µg/g")
-                fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-                fig.update_layout(
-                    xaxis={'categoryorder': 'total descending'},
-                    legend_title_text='Substances',
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
-                )
-                st.plotly_chart(fig)
-    
+  
         with tab3:
             st.markdown("")
             image = Image.open('Heatmap_ino_UB.png')
             st.image(image, use_column_width=True)
-
-            # Filtrer les substances
-            option_substances_ino_ub = st.multiselect(
-                '**Sélectionner les substances que vous souhaitez analyser :**',
-                options=df_ino['Nom Substance'].unique(),
-                default=df_ino['Nom Substance'].unique(),
-                key='substances_options_ino_ub'
-            )
-
-            # Selected substances
-            if len(option_substances_ino_ub) == 0:
-                st.warning('Merci de sélectionner au moins une substance')
-
-            # Filtrer les familles d'aliments
-            option_ali_ino_ub = st.multiselect(
-                "**Sélectionner les familles d'aliments que vous souhaitez analyser :**",
-                options=df_ino['Groupe'].unique(),
-                default=df_ino['Groupe'].unique(),
-                key='ali_options_ino_ub'
-            )
-
-            # Selected aliment
-            if len(option_ali_ino_ub) == 0:
-                st.warning("Merci de sélectionner au moins une substance et une famille d'aliments")
-
-
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered = df_ino[(df_ino['Nom Substance'].isin(option_substances_ino_ub)) & (df_ino['Groupe'].isin(option_ali_ino_ub))]
-
-            # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            if len(option_substances_ino_ub) == 0 or len(option_ali_ino_ub) == 0:
-                st.warning("Merci de sélectionner au moins une substance et une famille d'aliments")
-            else:
-                fig = px.bar(df_filtered, x='UB', y='Groupe', color='Nom Substance', hover_data=['Aliment'])
-                fig.update_xaxes(title="Volume de la substance en µg/g")
-                fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-                fig.update_layout(
-                    xaxis={'categoryorder': 'total descending'},
-                    legend_title_text='Substances',
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
-                )
-                st.plotly_chart(fig)
 
     
     if substances == "Phytoestrogènes":
@@ -432,13 +295,28 @@ Si l’on souhaite connaître la part apportée par chaque groupe d’aliments d
         st.markdown("")
 
     if substances == "Contaminants inorganiques et minéraux":
-        st.markdown("Explications des différents types d'hypothèses : ")
-        st.markdown("texte + préciser les échelles")
+        st.subheader("Explications des 3 hypothèses :")
+        st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
 
+Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
+
+Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
+1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :
+* Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
+* Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
+ 
+2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :
+* Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
+* Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
+\n""")
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
 
         with tab1:
             st.markdown("**texte explicatif substances manquantes**")
+            
+            col1, col2, col3= st.columns(3)
+
+            with col3:
             #SelectBox
             contrib_option_substances_ino_ub = st.selectbox('Sélectionner les substances que vous souhaitez analyser :',
                                                 df_contrib_LB_UB['Substance'].unique(),
@@ -458,7 +336,7 @@ Si l’on souhaite connaître la part apportée par chaque groupe d’aliments d
 
             # Vérifier si des substances et familles d'aliments ont été sélectionnées
             fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments", color='Substance')
-            fig.update_xaxes(title="Contribution de la substance sur 100")
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
             fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
             fig.update_layout(
                     yaxis={'categoryorder': 'total ascending'},
