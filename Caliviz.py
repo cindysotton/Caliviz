@@ -317,36 +317,36 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
             col1, col2, col3= st.columns(3)
 
             with col3:
-            #SelectBox
-            contrib_option_substances_ino_ub = st.selectbox('Sélectionner les substances que vous souhaitez analyser :',
-                                                df_contrib_LB_UB['Substance'].unique(),
-                                                key='substances_ub')
+              #SelectBox
+              contrib_option_substances_ino_ub = st.selectbox('Sélectionner les substances que vous souhaitez analyser :',
+                                                  df_contrib_LB_UB['Substance'].unique(),
+                                                  key='substances_ub')
 
-            # Convertir la valeur unique en liste
-            selected_substances = [contrib_option_substances_ino_ub]
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin(selected_substances)]
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_ino_ub]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin(selected_substances)]
 
-            # Selected substances
-            if len(contrib_option_substances_ino_ub) == 0:
-                st.warning('Merci de sélectionner au moins une substance')
+              # Selected substances
+              if len(contrib_option_substances_ino_ub) == 0:
+                  st.warning('Merci de sélectionner au moins une substance')
 
-            # Filtrer les données en fonction des options sélectionnées
-            df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_ub])]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_ub])]
 
-            # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments", color='Substance')
-            fig.update_xaxes(title="% de la contribution à l’exposition totale")
-            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-            fig.update_layout(
-                    yaxis={'categoryorder': 'total ascending'},
-                    legend_title_text='Substances',
-                    #ascending=True
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
-                )
-            st.plotly_chart(fig)
+              # Vérifier si des substances et familles d'aliments ont été sélectionnées
+              fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments", color='Substance')
+              fig.update_xaxes(title="% de la contribution à l’exposition totale")
+              fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+              fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                      height=700,
+                      width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
+                      margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
+                  )
+              st.plotly_chart(fig)
 
 
         with tab2:
