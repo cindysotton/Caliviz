@@ -1,0 +1,288 @@
+Groupe d'aliments,Famille,Substance,Contribution_LB,Contribution_UB
+Pain et panification sèche,Contaminants inorganiques et minéraux,Arsenic inorganique,3,3
+Céréales pour petit déjeuner,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Pâtes,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Riz et blé dur ou concassé,Contaminants inorganiques et minéraux,Arsenic inorganique,1,1
+Viennoiserie,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Biscuits sucrés ou salés et barres,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Pâtisseries et gâteaux,Contaminants inorganiques et minéraux,Arsenic inorganique,1,0
+Lait,Contaminants inorganiques et minéraux,Arsenic inorganique,3,5
+Ultra-frais laitier,Contaminants inorganiques et minéraux,Arsenic inorganique,3,4
+Fromages,Contaminants inorganiques et minéraux,Arsenic inorganique,1,2
+Oeufs et dérivés,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Beurre,Contaminants inorganiques et minéraux,Arsenic inorganique,1,1
+Huile,Contaminants inorganiques et minéraux,Arsenic inorganique,0,1
+Margarine,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Viande,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Volaille et gibier,Contaminants inorganiques et minéraux,Arsenic inorganique,0,1
+Abats,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Charcuterie,Contaminants inorganiques et minéraux,Arsenic inorganique,0,1
+Poissons,Contaminants inorganiques et minéraux,Arsenic inorganique,1,1
+Crustacés et mollusques,Contaminants inorganiques et minéraux,Arsenic inorganique,1,1
+Légumes (hors pomme de terre),Contaminants inorganiques et minéraux,Arsenic inorganique,4,4
+Pommes de terre et apparentés,Contaminants inorganiques et minéraux,Arsenic inorganique,1,2
+Légumes secs,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Fruits,Contaminants inorganiques et minéraux,Arsenic inorganique,4,4
+Fruits secs et graines oléagineuses,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Glaces et desserts glacés,Contaminants inorganiques et minéraux,Arsenic inorganique,1,1
+Chocolat,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Sucres et dérivés,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Eaux,Contaminants inorganiques et minéraux,Arsenic inorganique,27,24
+Boissons fraîches sans alcool,Contaminants inorganiques et minéraux,Arsenic inorganique,5,4
+Boissons alcoolisées,Contaminants inorganiques et minéraux,Arsenic inorganique,6,5
+Café,Contaminants inorganiques et minéraux,Arsenic inorganique,16,14
+Autres boissons chaudes,Contaminants inorganiques et minéraux,Arsenic inorganique,5,5
+"Pizzas, quiches et pâtisseries salées",Contaminants inorganiques et minéraux,Arsenic inorganique,1,1
+"Sandwiches, casse-croûte",Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Soupes et bouillons,Contaminants inorganiques et minéraux,Arsenic inorganique,3,3
+Plats composés,Contaminants inorganiques et minéraux,Arsenic inorganique,5,5
+"Entremets, crèmes desserts et laits gélifiés",Contaminants inorganiques et minéraux,Arsenic inorganique,1,2
+Compotes et fruits cuits,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Condiments et sauces,Contaminants inorganiques et minéraux,Arsenic inorganique,2,2
+Aliments particuliers,Contaminants inorganiques et minéraux,Arsenic inorganique,0,0
+Pain et panification sèche,Contaminants inorganiques et minéraux,Mercure,0,4
+Céréales pour petit déjeuner,Contaminants inorganiques et minéraux,Mercure,0,0
+Pâtes,Contaminants inorganiques et minéraux,Mercure,0,1
+Riz et blé dur ou concassé,Contaminants inorganiques et minéraux,Mercure,0,1
+Viennoiserie,Contaminants inorganiques et minéraux,Mercure,0,0
+Biscuits sucrés ou salés et barres,Contaminants inorganiques et minéraux,Mercure,1,0
+Pâtisseries et gâteaux,Contaminants inorganiques et minéraux,Mercure,1,1
+Lait,Contaminants inorganiques et minéraux,Mercure,3,3
+Ultra-frais laitier,Contaminants inorganiques et minéraux,Mercure,1,3
+Fromages,Contaminants inorganiques et minéraux,Mercure,1,1
+Oeufs et dérivés,Contaminants inorganiques et minéraux,Mercure,0,1
+Beurre,Contaminants inorganiques et minéraux,Mercure,0,0
+Huile,Contaminants inorganiques et minéraux,Mercure,0,0
+Margarine,Contaminants inorganiques et minéraux,Mercure,0,0
+Viande,Contaminants inorganiques et minéraux,Mercure,0,2
+Volaille et gibier,Contaminants inorganiques et minéraux,Mercure,0,1
+Abats,Contaminants inorganiques et minéraux,Mercure,0,0
+Charcuterie,Contaminants inorganiques et minéraux,Mercure,4,1
+Poissons,Contaminants inorganiques et minéraux,Mercure,69,8
+Crustacés et mollusques,Contaminants inorganiques et minéraux,Mercure,3,0
+Légumes (hors pomme de terre),Contaminants inorganiques et minéraux,Mercure,1,4
+Pommes de terre et apparentés,Contaminants inorganiques et minéraux,Mercure,0,2
+Légumes secs,Contaminants inorganiques et minéraux,Mercure,0,0
+Fruits,Contaminants inorganiques et minéraux,Mercure,0,5
+Fruits secs et graines oléagineuses,Contaminants inorganiques et minéraux,Mercure,0,0
+Glaces et desserts glacés,Contaminants inorganiques et minéraux,Mercure,0,0
+Chocolat,Contaminants inorganiques et minéraux,Mercure,4,1
+Sucres et dérivés,Contaminants inorganiques et minéraux,Mercure,0,1
+Eaux,Contaminants inorganiques et minéraux,Mercure,4,26
+Boissons fraîches sans alcool,Contaminants inorganiques et minéraux,Mercure,0,4
+Boissons alcoolisées,Contaminants inorganiques et minéraux,Mercure,0,5
+Café,Contaminants inorganiques et minéraux,Mercure,0,8
+Autres boissons chaudes,Contaminants inorganiques et minéraux,Mercure,3,5
+"Pizzas, quiches et pâtisseries salées",Contaminants inorganiques et minéraux,Mercure,0,1
+"Sandwiches, casse-croûte",Contaminants inorganiques et minéraux,Mercure,1,1
+Soupes et bouillons,Contaminants inorganiques et minéraux,Mercure,0,3
+Plats composés,Contaminants inorganiques et minéraux,Mercure,2,2
+"Entremets, crèmes desserts et laits gélifiés",Contaminants inorganiques et minéraux,Mercure,2,1
+Compotes et fruits cuits,Contaminants inorganiques et minéraux,Mercure,1,1
+Condiments et sauces,Contaminants inorganiques et minéraux,Mercure,0,0
+Aliments particuliers,Contaminants inorganiques et minéraux,Mercure,0,0
+Pain et panification sèche,Contaminants inorganiques et minéraux,Antimone,5,5
+Céréales pour petit déjeuner,Contaminants inorganiques et minéraux,Antimone,0,0
+Pâtes,Contaminants inorganiques et minéraux,Antimone,4,3
+Riz et blé dur ou concassé,Contaminants inorganiques et minéraux,Antimone,2,2
+Viennoiserie,Contaminants inorganiques et minéraux,Antimone,1,1
+Biscuits sucrés ou salés et barres,Contaminants inorganiques et minéraux,Antimone,1,1
+Pâtisseries et gâteaux,Contaminants inorganiques et minéraux,Antimone,5,4
+Lait,Contaminants inorganiques et minéraux,Antimone,1,2
+Ultra-frais laitier,Contaminants inorganiques et minéraux,Antimone,2,2
+Fromages,Contaminants inorganiques et minéraux,Antimone,1,1
+Oeufs et dérivés,Contaminants inorganiques et minéraux,Antimone,0,0
+Beurre,Contaminants inorganiques et minéraux,Antimone,1,1
+Huile,Contaminants inorganiques et minéraux,Antimone,0,0
+Margarine,Contaminants inorganiques et minéraux,Antimone,0,0
+Viande,Contaminants inorganiques et minéraux,Antimone,3,3
+Volaille et gibier,Contaminants inorganiques et minéraux,Antimone,1,1
+Abats,Contaminants inorganiques et minéraux,Antimone,0,0
+Charcuterie,Contaminants inorganiques et minéraux,Antimone,1,1
+Poissons,Contaminants inorganiques et minéraux,Antimone,1,1
+Crustacés et mollusques,Contaminants inorganiques et minéraux,Antimone,0,0
+Légumes (hors pomme de terre),Contaminants inorganiques et minéraux,Antimone,4,4
+Pommes de terre et apparentés,Contaminants inorganiques et minéraux,Antimone,1,2
+Légumes secs,Contaminants inorganiques et minéraux,Antimone,1,0
+Fruits,Contaminants inorganiques et minéraux,Antimone,5,6
+Fruits secs et graines oléagineuses,Contaminants inorganiques et minéraux,Antimone,0,0
+Glaces et desserts glacés,Contaminants inorganiques et minéraux,Antimone,1,1
+Chocolat,Contaminants inorganiques et minéraux,Antimone,1,1
+Sucres et dérivés,Contaminants inorganiques et minéraux,Antimone,11,8
+Eaux,Contaminants inorganiques et minéraux,Antimone,4,15
+Boissons fraîches sans alcool,Contaminants inorganiques et minéraux,Antimone,3,4
+Boissons alcoolisées,Contaminants inorganiques et minéraux,Antimone,3,5
+Café,Contaminants inorganiques et minéraux,Antimone,10,9
+Autres boissons chaudes,Contaminants inorganiques et minéraux,Antimone,13,9
+"Pizzas, quiches et pâtisseries salées",Contaminants inorganiques et minéraux,Antimone,1,1
+"Sandwiches, casse-croûte",Contaminants inorganiques et minéraux,Antimone,0,0
+Soupes et bouillons,Contaminants inorganiques et minéraux,Antimone,3,3
+Plats composés,Contaminants inorganiques et minéraux,Antimone,3,2
+"Entremets, crèmes desserts et laits gélifiés",Contaminants inorganiques et minéraux,Antimone,2,2
+Compotes et fruits cuits,Contaminants inorganiques et minéraux,Antimone,1,1
+Condiments et sauces,Contaminants inorganiques et minéraux,Antimone,0,0
+Aliments particuliers,Contaminants inorganiques et minéraux,Antimone,0,0
+Pain et panification sèche,Contaminants inorganiques et minéraux,Argent,0,3
+Céréales pour petit déjeuner,Contaminants inorganiques et minéraux,Argent,0,0
+Pâtes,Contaminants inorganiques et minéraux,Argent,2,2
+Riz et blé dur ou concassé,Contaminants inorganiques et minéraux,Argent,1,1
+Viennoiserie,Contaminants inorganiques et minéraux,Argent,0,0
+Biscuits sucrés ou salés et barres,Contaminants inorganiques et minéraux,Argent,1,1
+Pâtisseries et gâteaux,Contaminants inorganiques et minéraux,Argent,2,1
+Lait,Contaminants inorganiques et minéraux,Argent,2,3
+Ultra-frais laitier,Contaminants inorganiques et minéraux,Argent,3,3
+Fromages,Contaminants inorganiques et minéraux,Argent,1,1
+Oeufs et dérivés,Contaminants inorganiques et minéraux,Argent,1,1
+Beurre,Contaminants inorganiques et minéraux,Argent,0,0
+Huile,Contaminants inorganiques et minéraux,Argent,0,0
+Margarine,Contaminants inorganiques et minéraux,Argent,0,0
+Viande,Contaminants inorganiques et minéraux,Argent,3,2
+Volaille et gibier,Contaminants inorganiques et minéraux,Argent,3,2
+Abats,Contaminants inorganiques et minéraux,Argent,1,0
+Charcuterie,Contaminants inorganiques et minéraux,Argent,2,1
+Poissons,Contaminants inorganiques et minéraux,Argent,1,1
+Crustacés et mollusques,Contaminants inorganiques et minéraux,Argent,24,11
+Légumes (hors pomme de terre),Contaminants inorganiques et minéraux,Argent,5,5
+Pommes de terre et apparentés,Contaminants inorganiques et minéraux,Argent,3,2
+Légumes secs,Contaminants inorganiques et minéraux,Argent,0,0
+Fruits,Contaminants inorganiques et minéraux,Argent,8,6
+Fruits secs et graines oléagineuses,Contaminants inorganiques et minéraux,Argent,0,0
+Glaces et desserts glacés,Contaminants inorganiques et minéraux,Argent,1,1
+Chocolat,Contaminants inorganiques et minéraux,Argent,0,0
+Sucres et dérivés,Contaminants inorganiques et minéraux,Argent,1,1
+Eaux,Contaminants inorganiques et minéraux,Argent,8,20
+Boissons fraîches sans alcool,Contaminants inorganiques et minéraux,Argent,3,4
+Boissons alcoolisées,Contaminants inorganiques et minéraux,Argent,6,6
+Café,Contaminants inorganiques et minéraux,Argent,7,8
+Autres boissons chaudes,Contaminants inorganiques et minéraux,Argent,3,5
+"Pizzas, quiches et pâtisseries salées",Contaminants inorganiques et minéraux,Argent,1,1
+"Sandwiches, casse-croûte",Contaminants inorganiques et minéraux,Argent,0,0
+Soupes et bouillons,Contaminants inorganiques et minéraux,Argent,4,3
+Plats composés,Contaminants inorganiques et minéraux,Argent,3,2
+"Entremets, crèmes desserts et laits gélifiés",Contaminants inorganiques et minéraux,Argent,0,1
+Compotes et fruits cuits,Contaminants inorganiques et minéraux,Argent,2,1
+Condiments et sauces,Contaminants inorganiques et minéraux,Argent,0,0
+Aliments particuliers,Contaminants inorganiques et minéraux,Argent,0,0
+Pain et panification sèche,Contaminants inorganiques et minéraux,Gallium,0,4
+Céréales pour petit déjeuner,Contaminants inorganiques et minéraux,Gallium,0,0
+Pâtes,Contaminants inorganiques et minéraux,Gallium,0,2
+Riz et blé dur ou concassé,Contaminants inorganiques et minéraux,Gallium,0,1
+Viennoiserie,Contaminants inorganiques et minéraux,Gallium,2,0
+Biscuits sucrés ou salés et barres,Contaminants inorganiques et minéraux,Gallium,0,0
+Pâtisseries et gâteaux,Contaminants inorganiques et minéraux,Gallium,2,1
+Lait,Contaminants inorganiques et minéraux,Gallium,0,3
+Ultra-frais laitier,Contaminants inorganiques et minéraux,Gallium,0,3
+Fromages,Contaminants inorganiques et minéraux,Gallium,5,1
+Oeufs et dérivés,Contaminants inorganiques et minéraux,Gallium,0,1
+Beurre,Contaminants inorganiques et minéraux,Gallium,73,3
+Huile,Contaminants inorganiques et minéraux,Gallium,0,0
+Margarine,Contaminants inorganiques et minéraux,Gallium,2,0
+Viande,Contaminants inorganiques et minéraux,Gallium,0,2
+Volaille et gibier,Contaminants inorganiques et minéraux,Gallium,1,1
+Abats,Contaminants inorganiques et minéraux,Gallium,0,0
+Charcuterie,Contaminants inorganiques et minéraux,Gallium,0,1
+Poissons,Contaminants inorganiques et minéraux,Gallium,0,1
+Crustacés et mollusques,Contaminants inorganiques et minéraux,Gallium,2,0
+Légumes (hors pomme de terre),Contaminants inorganiques et minéraux,Gallium,3,4
+Pommes de terre et apparentés,Contaminants inorganiques et minéraux,Gallium,0,2
+Légumes secs,Contaminants inorganiques et minéraux,Gallium,0,0
+Fruits,Contaminants inorganiques et minéraux,Gallium,1,5
+Fruits secs et graines oléagineuses,Contaminants inorganiques et minéraux,Gallium,0,0
+Glaces et desserts glacés,Contaminants inorganiques et minéraux,Gallium,0,0
+Chocolat,Contaminants inorganiques et minéraux,Gallium,5,0
+Sucres et dérivés,Contaminants inorganiques et minéraux,Gallium,0,1
+Eaux,Contaminants inorganiques et minéraux,Gallium,0,28
+Boissons fraîches sans alcool,Contaminants inorganiques et minéraux,Gallium,0,5
+Boissons alcoolisées,Contaminants inorganiques et minéraux,Gallium,0,5
+Café,Contaminants inorganiques et minéraux,Gallium,0,9
+Autres boissons chaudes,Contaminants inorganiques et minéraux,Gallium,0,6
+"Pizzas, quiches et pâtisseries salées",Contaminants inorganiques et minéraux,Gallium,0,1
+"Sandwiches, casse-croûte",Contaminants inorganiques et minéraux,Gallium,0,1
+Soupes et bouillons,Contaminants inorganiques et minéraux,Gallium,0,3
+Plats composés,Contaminants inorganiques et minéraux,Gallium,1,2
+"Entremets, crèmes desserts et laits gélifiés",Contaminants inorganiques et minéraux,Gallium,0,1
+Compotes et fruits cuits,Contaminants inorganiques et minéraux,Gallium,3,1
+Condiments et sauces,Contaminants inorganiques et minéraux,Gallium,0,0
+Aliments particuliers,Contaminants inorganiques et minéraux,Gallium,0,0
+Pain et panification sèche,Contaminants inorganiques et minéraux,Germanium,3,4
+Céréales pour petit déjeuner,Contaminants inorganiques et minéraux,Germanium,0,0
+Pâtes,Contaminants inorganiques et minéraux,Germanium,3,2
+Riz et blé dur ou concassé,Contaminants inorganiques et minéraux,Germanium,1,1
+Viennoiserie,Contaminants inorganiques et minéraux,Germanium,0,0
+Biscuits sucrés ou salés et barres,Contaminants inorganiques et minéraux,Germanium,1,0
+Pâtisseries et gâteaux,Contaminants inorganiques et minéraux,Germanium,1,1
+Lait,Contaminants inorganiques et minéraux,Germanium,1,3
+Ultra-frais laitier,Contaminants inorganiques et minéraux,Germanium,1,3
+Fromages,Contaminants inorganiques et minéraux,Germanium,1,1
+Oeufs et dérivés,Contaminants inorganiques et minéraux,Germanium,1,1
+Beurre,Contaminants inorganiques et minéraux,Germanium,5,3
+Huile,Contaminants inorganiques et minéraux,Germanium,0,0
+Margarine,Contaminants inorganiques et minéraux,Germanium,0,0
+Viande,Contaminants inorganiques et minéraux,Germanium,4,3
+Volaille et gibier,Contaminants inorganiques et minéraux,Germanium,1,1
+Abats,Contaminants inorganiques et minéraux,Germanium,0,0
+Charcuterie,Contaminants inorganiques et minéraux,Germanium,3,2
+Poissons,Contaminants inorganiques et minéraux,Germanium,1,1
+Crustacés et mollusques,Contaminants inorganiques et minéraux,Germanium,0,0
+Légumes (hors pomme de terre),Contaminants inorganiques et minéraux,Germanium,2,4
+Pommes de terre et apparentés,Contaminants inorganiques et minéraux,Germanium,2,2
+Légumes secs,Contaminants inorganiques et minéraux,Germanium,0,0
+Fruits,Contaminants inorganiques et minéraux,Germanium,6,6
+Fruits secs et graines oléagineuses,Contaminants inorganiques et minéraux,Germanium,0,0
+Glaces et desserts glacés,Contaminants inorganiques et minéraux,Germanium,0,0
+Chocolat,Contaminants inorganiques et minéraux,Germanium,1,1
+Sucres et dérivés,Contaminants inorganiques et minéraux,Germanium,2,1
+Eaux,Contaminants inorganiques et minéraux,Germanium,33,30
+Boissons fraîches sans alcool,Contaminants inorganiques et minéraux,Germanium,4,5
+Boissons alcoolisées,Contaminants inorganiques et minéraux,Germanium,0,3
+Café,Contaminants inorganiques et minéraux,Germanium,11,9
+Autres boissons chaudes,Contaminants inorganiques et minéraux,Germanium,3,5
+"Pizzas, quiches et pâtisseries salées",Contaminants inorganiques et minéraux,Germanium,1,1
+"Sandwiches, casse-croûte",Contaminants inorganiques et minéraux,Germanium,1,1
+Soupes et bouillons,Contaminants inorganiques et minéraux,Germanium,1,2
+Plats composés,Contaminants inorganiques et minéraux,Germanium,3,2
+"Entremets, crèmes desserts et laits gélifiés",Contaminants inorganiques et minéraux,Germanium,1,1
+Compotes et fruits cuits,Contaminants inorganiques et minéraux,Germanium,0,0
+Condiments et sauces,Contaminants inorganiques et minéraux,Germanium,1,1
+Aliments particuliers,Contaminants inorganiques et minéraux,Germanium,0,0
+Pain et panification sèche,Contaminants inorganiques et minéraux,Tellure,5,5
+Céréales pour petit déjeuner,Contaminants inorganiques et minéraux,Tellure,0,0
+Pâtes,Contaminants inorganiques et minéraux,Tellure,1,1
+Riz et blé dur ou concassé,Contaminants inorganiques et minéraux,Tellure,1,1
+Viennoiserie,Contaminants inorganiques et minéraux,Tellure,0,0
+Biscuits sucrés ou salés et barres,Contaminants inorganiques et minéraux,Tellure,1,0
+Pâtisseries et gâteaux,Contaminants inorganiques et minéraux,Tellure,1,1
+Lait,Contaminants inorganiques et minéraux,Tellure,3,3
+Ultra-frais laitier,Contaminants inorganiques et minéraux,Tellure,2,3
+Fromages,Contaminants inorganiques et minéraux,Tellure,6,3
+Oeufs et dérivés,Contaminants inorganiques et minéraux,Tellure,1,1
+Beurre,Contaminants inorganiques et minéraux,Tellure,30,13
+Huile,Contaminants inorganiques et minéraux,Tellure,1,0
+Margarine,Contaminants inorganiques et minéraux,Tellure,0,0
+Viande,Contaminants inorganiques et minéraux,Tellure,4,3
+Volaille et gibier,Contaminants inorganiques et minéraux,Tellure,2,1
+Abats,Contaminants inorganiques et minéraux,Tellure,0,0
+Charcuterie,Contaminants inorganiques et minéraux,Tellure,4,2
+Poissons,Contaminants inorganiques et minéraux,Tellure,0,0
+Crustacés et mollusques,Contaminants inorganiques et minéraux,Tellure,0,0
+Légumes (hors pomme de terre),Contaminants inorganiques et minéraux,Tellure,3,4
+Pommes de terre et apparentés,Contaminants inorganiques et minéraux,Tellure,1,2
+Légumes secs,Contaminants inorganiques et minéraux,Tellure,1,0
+Fruits,Contaminants inorganiques et minéraux,Tellure,2,4
+Fruits secs et graines oléagineuses,Contaminants inorganiques et minéraux,Tellure,0,0
+Glaces et desserts glacés,Contaminants inorganiques et minéraux,Tellure,0,0
+Chocolat,Contaminants inorganiques et minéraux,Tellure,1,0
+Sucres et dérivés,Contaminants inorganiques et minéraux,Tellure,1,1
+Eaux,Contaminants inorganiques et minéraux,Tellure,9,21
+Boissons fraîches sans alcool,Contaminants inorganiques et minéraux,Tellure,3,4
+Boissons alcoolisées,Contaminants inorganiques et minéraux,Tellure,4,5
+Café,Contaminants inorganiques et minéraux,Tellure,5,8
+Autres boissons chaudes,Contaminants inorganiques et minéraux,Tellure,1,4
+"Pizzas, quiches et pâtisseries salées",Contaminants inorganiques et minéraux,Tellure,0,0
+"Sandwiches, casse-croûte",Contaminants inorganiques et minéraux,Tellure,0,0
+Soupes et bouillons,Contaminants inorganiques et minéraux,Tellure,1,2
+Plats composés,Contaminants inorganiques et minéraux,Tellure,2,2
+"Entremets, crèmes desserts et laits gélifiés",Contaminants inorganiques et minéraux,Tellure,1,1
+Compotes et fruits cuits,Contaminants inorganiques et minéraux,Tellure,1,1
+Condiments et sauces,Contaminants inorganiques et minéraux,Tellure,1,1
+Aliments particuliers,Contaminants inorganiques et minéraux,Tellure,0,0
