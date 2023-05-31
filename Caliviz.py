@@ -235,11 +235,8 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                       yaxis={'categoryorder': 'total ascending'},
                       legend_title_text='Substances',
                       #ascending=True
-                      height=700,
-                      width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                      margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                   )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
             col1, col2, col3, col4 = st.columns(4)
             with col4:
@@ -254,9 +251,8 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                     yaxis={'categoryorder': 'total ascending'},
                     legend_title_text='Substances',
                     #ascending=True
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
         with tab2:
             st.markdown("")
