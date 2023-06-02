@@ -144,12 +144,27 @@ if selected == "Les substances":
 
 ######## Contamination
 if selected == "Contamination":
+    st.subheader("Quantification des substances : limites analytiques et hypothèses")
+    st.markdown("La quantification d’une substance chimique dans un aliment peut parfois rencontrer des difficultés en raison des limites analytiques. Il s’agit notamment des limites de détection de la substance (LD) dans l’aliment par l’appareil de mesure et/ou de quantification (LQ).")
+    st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
+
+Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
+
+Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peuvent être utilisées pour avoir une estimation du niveau de contamination de ces substances en tenant compte de ces limites analytiques. Deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
+1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :
+* Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
+* Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
+
+2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :
+* Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
+* Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
+\n""")
     
-    col1, col2, col3, col4 = st.columns(4)
+    col1, col2, col3 = st.columns(3)
     
-    with col4:
+    with col3:
         substances = st.selectbox(
-        "Choix du groupe de substances",
+        "Choix de la famille de substances",
         ('Contaminants inorganiques','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
     if substances == "Acrylamide":
@@ -174,23 +189,6 @@ if selected == "Contamination":
         # Création du nouveau dataframe avec les modalités spécifiées
         df_ino = df_ino[df_ino['Nom Substance'].isin(modalites)]
 
-
-        st.subheader("Explications des 3 hypothèses :")
-        st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
-
-Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
-
-Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
-1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :
-* Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
-* Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
- 
-2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :
-* Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
-* Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
-\n""")
-
-        
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
         df_ino_ali = df_ino.groupby(['Aliment','Nom Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
         df_ino_groupe = df_ino.groupby(['Groupe', 'Nom Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
@@ -206,7 +204,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
             col1, col2, col3, col4 = st.columns(4)
     
             with col4:
-                substances_LB = st.selectbox("Choix de la substance", choix_substances, key="substances_LB")
+                substances_LB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB")
                 df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances_LB]
 
             fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
@@ -221,10 +219,15 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
 
             col1, col2, col3, col4 = st.columns(4)
             with col4:
-                groupe_LB= st.selectbox("Choix du groupe d'aliment", choix_groupe, key="groupe_LB")
+                #Groupe
+                choix_groupe = df_ino_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Crustacés et mollusques"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+                groupe_LB= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB")
                 df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_LB) & (df_ino_ali['Nom Substance'] == substances_LB)]
     
-
             fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
             fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
@@ -243,7 +246,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
             col1, col2, col3, col4 = st.columns(4)
     
             with col4:
-                substances_MB = st.selectbox("Choix de la substance", choix_substances, key="substances_MB")
+                substances_MB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB")
                 df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances_MB]
 
             fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
@@ -253,15 +256,18 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                       yaxis={'categoryorder': 'total ascending'},
                       legend_title_text='Substances',
                       #ascending=True
-                      height=700,
-                      width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                      margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                   )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
             col1, col2, col3, col4 = st.columns(4)
             with col4:
-                groupe_MB= st.selectbox("Choix du groupe d'aliment", choix_groupe, key="groupe_MB")
+                #Groupe
+                choix_groupe = df_ino_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Crustacés et mollusques"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+                groupe_MB= st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_MB")
                 df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_MB) & (df_ino_ali['Nom Substance'] == substances_MB)]
     
 
@@ -272,9 +278,8 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                     yaxis={'categoryorder': 'total ascending'},
                     legend_title_text='Substances',
                     #ascending=True
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
 
     
@@ -287,7 +292,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
             col1, col2, col3, col4 = st.columns(4)
     
             with col4:
-                substances_UB = st.selectbox("Choix de la substance", choix_substances, key="substances_UB")
+                substances_UB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB")
                 df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances_UB]
 
             fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
@@ -297,15 +302,13 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                       yaxis={'categoryorder': 'total ascending'},
                       legend_title_text='Substances',
                       #ascending=True
-                      height=700,
-                      width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                      margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
+
                   )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
             col1, col2, col3, col4 = st.columns(4)
             with col4:
-                groupe_UB= st.selectbox("Choix du groupe d'aliment", choix_groupe, key="groupe_UB")
+                groupe_UB= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB")
                 df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_UB) & (df_ino_ali['Nom Substance'] == substances_UB)]
     
 
@@ -316,9 +319,8 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                     yaxis={'categoryorder': 'total ascending'},
                     legend_title_text='Substances',
                     #ascending=True
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
 
      
@@ -337,16 +339,31 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
         
 
 if selected == "Contribution":
-    st.subheader("Définition de l'exposition")
+    st.subheader("Exposition de la population aux substances chimiques et aliments contributeurs")
     st.markdown("""L’exposition est la quantité d’une substance ingérée par le consommateur. Elle se calcule pour une personne via son alimentation en prenant en compte à la fois le niveau de contamination de tous les différents aliments / groupe d’aliments par cette substance, sa consommation individuelle de ces aliments ainsi que son poids corporel. 
 \nL’exposition est calculée pour tous les individus et une exposition moyenne de la population est ainsi calculée. Elle représente la quantité moyenne d’une substance ingérée par la population via son régime alimentaire total.
 \nSi l’on souhaite connaître la part apportée par chaque groupe d’aliments dans cette quantité de substance ingérée par la population, on parlera de contribution à l’exposition totale. Celle-ci, exprimée en pourcentage, représente la quantité de substance apportée par un groupe d’aliments par rapport à tout le régime alimentaire. La somme des contributions est égale à 100%.
 """)
+    st.subheader("Explications des 3 hypothèses :")
+    st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
+
+Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
+
+Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
+1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :
+* Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
+* Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
+
+2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :
+* Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
+* Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
+\n""")
+
     col1, col2, col3= st.columns(3)
 
     with col3:
         substances = st.selectbox(
-        "Choix du groupe de substances",
+        "Choix de la famille de substances",
         ('Contaminants inorganiques et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
     if substances == "Acrylamide":
@@ -365,20 +382,7 @@ if selected == "Contribution":
         st.markdown("")
 
     if substances == "Contaminants inorganiques et minéraux":
-        st.subheader("Explications des 3 hypothèses :")
-        st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
 
-Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
-
-Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
-1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :
-* Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
-* Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
- 
-2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :
-* Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
-* Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
-\n""")
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
 
         with tab1:
