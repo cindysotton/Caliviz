@@ -47,7 +47,39 @@ flierprops = dict(marker="X", markerfacecolor='orange', markersize=12,
 
 ####### DATAFRAME à modifier en concervant le nom attribué
 # Famille des Contaminents Inorg et Mineraux
-df_ino = pd.read_csv('Reformatage_Conta_Inorg_Mineraux_aliment.csv')
+#df_ino = pd.read_csv('Reformatage_Conta_Inorg_Mineraux_aliment.csv')
+df_ino = pd.read_csv('Contaminants inorg et mineraux.csv')
+
+# Renommer les colonnes
+df_ino = df_ino.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+#Suppression des lignes avec la Valeur NR
+df_ino = df_ino.drop(df_ino[df_ino["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_ino['UB'] = df_ino['UB'].astype('float')
+df_ino['LB'] = df_ino['LB'].astype('float')
+df_ino['MB'] = df_ino['MB'].astype('float')
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_ino = df_ino.drop(["Date", "Région", "Vague"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_ino = df_ino.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+# Créer un dictionnaire à partir des colonnes "Substance" et "nom substance"
+dictionnaire = {'Ag': 'Argent', 'Al': 'Aluminium', 'As': 'Arsenic', 'Ba': 'Baryum', 'Ca': 'Calcium', 'Cd': 'Cadmium', 'Co': 'Cobalt', 'Cr': 'Chromium', 'Cu': 'Cuivre', 'Fe': 'Fer', 'Ga': 'Gallium', 'Ge': 'Germanium', 'Hg': 'Mercure', 'K': 'Potassium', 'Li': 'Lithium', 'Mg': 'Magnésium', 'Mn': 'Manganese', 'Mo': 'Molybdène', 'Na': 'Sodium', 'Ni': 'Nickel', 'Pb': 'Plomb', 'Sb': 'Antimoine', 'Se': 'Selenium', 'Sn': 'Etain', 'Sr': 'Strontium', 'Te': 'Tellure', 'V': 'Vanadium', 'Zn': 'Zinc', 'AN': 'Anthracene', 'BaA': 'Benzo(a)Anthracène', 'BaP': 'Benzo[a]Pyrène', 'BbF': 'Benzo(b)fluoranthène', 'BcFL': 'Benzo[c]fluorene', 'BghiP': 'Benzo[ghi]perylene', 'BjF': 'Benzo(j)fluoranthène', 'BkF': 'Benzo(k)fluoranthène', 'CHR': 'Chrysène', 'CPP': 'Cyclopenta[cd]pyrene', 'DbaeP': 'Dibenzo[a,e]pyrene', 'DBahA': 'Dibenz[a,h]anthracene', 'DbahP': 'DiBenzo[a,h]Pyrène', 'DbaiP': 'Dibenzo[a,i]pyrene', 'DbalP': 'Dibenzo[a,l]pyrene', 'FA': 'Fluoranthene', 'IP': 'Idenopyrene', 'MCH': '5-methylchrysene', 'PHE': 'Phenanthrene', 'PY': 'Pyrene', '15-Ac-DON': '15-acétyldéoxynivalénol', '3-Ac-DON': '3-acétyldéoxynivalénol', 'AFB1': 'Aflatoxines B1', 'AFB2': 'Aflatoxines B2', 'AFG1': 'Aflatoxines G1', 'AFG2': 'Aflatoxines G2', 'AFM1': 'Aflatoxines M1', 'alpha-ZAL': 'Alpha zéaralanol', 'alpha-ZOL': 'Alpha zéaralénol', 'beta-ZAL': 'Bêta zéaralanol', 'beta-ZOL': 'Bêta zéaralénol', 'DAS': 'diacétoxyscirpénol', 'DOM1': 'dérivé déépoxyde du DON', 'DON': 'déoxynivalénol', 'FB1': 'Fumonisine B1', 'FB2': 'Fumonisine B2', 'HT2': 'Toxine HT2', 'MAS': 'monoacétoxyscirpénol', 'NIV': 'Nivalenol', 'OTA': 'Ochratoxine A', 'OTB': 'Ochratoxine B', 'Pat': 'Patuline', 'T2': 'Toxine T2', 'Ver': 'Verrucarol', 'ZEA': 'zéaralénone', 'PFBA': 'Acide perfluorobutanoïque', 'PFBS': 'Perfluorobutane sulfonate', 'PFDA': 'Acide perfluorodecanoïque', 'PFDoA': 'Acide perfluorododecanoïque', 'PFDS': 'Perfluorodecane sulfonate', 'PFHpA': 'Acide perfluoroheptanoïque', 'PFHpS': 'Perfluorohptane sulfonate', 'PFHxA': 'Acide perfluorohexanoïque', 'PFHxS': 'Perfluorohexane sulfonate', 'PFNA': 'Acide perfluorononanoïque', 'PFOA': 'Acide perfluoroocanoïque', 'PFOS': 'Perfluorooctane sulfonate', 'PFPA': 'Acide perfluoropentanoïque', 'PFTeDA': 'Acide perfluorotetradecanoïque', 'PFTrDA': 'Acide perfluorotridecanoïque', 'PFUnA': 'Acide perfluoroundecanoïque'}
+#Remplacer les abréviations des Substances par leurs noms complet
+df_ino['Substance'] = df_ino['Substance'].replace(dictionnaire)
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_ino[df_ino['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_ino[df_ino.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_ino = df_ino.drop(duplicated_rows_to_remove.index)
+
+
 # Contribution LB et UB
 df_contrib_LB_UB = pd.read_csv('Contribution_EAT2_LB_UB.csv')
 # Contribution MB
@@ -187,17 +219,23 @@ if selected == "Contamination":
 Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
 
 Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peuvent être utilisées pour avoir une estimation du niveau de contamination de ces substances en tenant compte de ces limites analytiques. Deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
-1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :
+
+***1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :***
 * Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
 * Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
 
-2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :
+***2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :***
 * Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
 * Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
 \n""")
 
-    image_hypothese = Image.open('Hypothèses_Analyses.png')
-    st.image(image_hypothese)
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    
+    with col2:
+        image_hypothese = Image.open('Hypotheses_Analyses.png')
+        width = 700
+        st.image(image_hypothese, width=width)
+    
     
     col1, col2, col3 = st.columns(3)
     
@@ -226,13 +264,13 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
              'Etain', 'Gallium', 'Germanium', 'Strontium', 'Tellure', 'Vanadium', 'Nickel', 'Cobalt', 'Chrome']
 
         # Création du nouveau dataframe avec les modalités spécifiées
-        df_ino = df_ino[df_ino['Nom Substance'].isin(modalites)]
+        df_ino = df_ino[df_ino['Substance'].isin(modalites)]
 
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
-        df_ino_ali = df_ino.groupby(['Aliment','Nom Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
-        df_ino_groupe = df_ino.groupby(['Groupe', 'Nom Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+        df_ino_ali = df_ino.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_ino_groupe = df_ino.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
 
-        choix_substances = df_ino['Nom Substance'].unique()
+        choix_substances = df_ino['Substance'].unique()
         choix_groupe = df_ino['Groupe'].unique()
 
         with tab1:
@@ -240,11 +278,11 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             image = Image.open('Heatmap_ino_LB.png')
             st.image(image, use_column_width=True)
 
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2, col3 = st.columns(3)
     
-            with col4:
+            with col3:
                 substances_LB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB")
-                df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances_LB]
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_LB]
 
             fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -256,8 +294,8 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
                   )
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
-            col1, col2, col3, col4 = st.columns(4)
-            with col4:
+            col1, col2, col3 = st.columns(3)
+            with col3:
                 #Groupe
                 choix_groupe = df_ino_ali['Groupe'].unique().astype(str).tolist()
                 # Définir la valeur par défaut
@@ -265,7 +303,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
                 # Trouver l'index correspondant à la valeur par défaut
                 index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
                 groupe_LB= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB")
-                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_LB) & (df_ino_ali['Nom Substance'] == substances_LB)]
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_LB) & (df_ino_ali['Substance'] == substances_LB)]
     
             fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -282,11 +320,11 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             image = Image.open('Heatmap_ino_MB.png')
             st.image(image, use_column_width=True)
 
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2, col3 = st.columns(3)
     
-            with col4:
+            with col3:
                 substances_MB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB")
-                df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances_MB]
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_MB]
 
             fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -298,8 +336,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
                   )
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
-            col1, col2, col3, col4 = st.columns(4)
-            with col4:
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
                 #Groupe
                 choix_groupe = df_ino_ali['Groupe'].unique().astype(str).tolist()
                 # Définir la valeur par défaut
@@ -307,7 +346,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
                 # Trouver l'index correspondant à la valeur par défaut
                 index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
                 groupe_MB= st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_MB")
-                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_MB) & (df_ino_ali['Nom Substance'] == substances_MB)]
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_MB) & (df_ino_ali['Substance'] == substances_MB)]
     
 
             fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
@@ -328,11 +367,11 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             st.image(image, use_column_width=True)
 
 
-            col1, col2, col3, col4 = st.columns(4)
+            col1, col2, col3 = st.columns(3)
     
-            with col4:
+            with col3:
                 substances_UB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB")
-                df_filtered_substance = df_ino_groupe[df_ino_groupe['Nom Substance'] == substances_UB]
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_UB]
 
             fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -345,10 +384,11 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
                   )
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
-            col1, col2, col3, col4 = st.columns(4)
-            with col4:
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
                 groupe_UB= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB")
-                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_UB) & (df_ino_ali['Nom Substance'] == substances_UB)]
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_UB) & (df_ino_ali['Substance'] == substances_UB)]
     
 
             fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
@@ -378,7 +418,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         
 
 if selected == "Contribution":
-    st.subheader("Quantification des substances : limites analytiques et hypothèses")
+    st.subheader("Exposition alimentaire de la population aux substances chimiques")
     st.markdown("""L’exposition est la quantité d’une substance ingérée par le consommateur. Elle se calcule pour une personne via son alimentation en prenant en compte à la fois le niveau de contamination de tous les différents aliments / groupe d’aliments par cette substance, sa consommation individuelle de ces aliments ainsi que son poids corporel. 
 \nL’exposition est calculée pour tous les individus et une exposition moyenne de la population est ainsi calculée. Elle représente la quantité moyenne d’une substance ingérée par la population via son régime alimentaire total.
 \nSi l’on souhaite connaître la part apportée par chaque groupe d’aliments dans cette quantité de substance ingérée par la population, on parlera de contribution à l’exposition totale. Celle-ci, exprimée en pourcentage, représente la quantité de substance apportée par un groupe d’aliments par rapport à tout le régime alimentaire. La somme des contributions est égale à 100%.
@@ -388,17 +428,21 @@ if selected == "Contribution":
 Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
 
 Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
-1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :
+***1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :***
 * Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
 * Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
 
-2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :
+***2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :***
 * Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
 * Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
 \n""")
 
-    image_hypothese = Image.open('Hypothèses_Analyses.png')
-    st.image(image_hypothese)
+    col1, col2, col3, col4, col5, col6 = st.columns(6)
+    
+    with col2:
+        image_hypothese = Image.open('Hypotheses_Analyses.png')
+        width = 700
+        st.image(image_hypothese, width=width)
 
     col1, col2, col3= st.columns(3)
 
@@ -427,7 +471,6 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
 
         with tab1:
-            st.markdown("**texte explicatif substances manquantes**")
             
             col1, col2, col3= st.columns(3)
 
@@ -447,17 +490,14 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
               df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_ub])]
 
             # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments")
+            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
             fig.update_xaxes(title="% de la contribution à l’exposition totale")
             fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
             fig.update_layout(
                     yaxis={'categoryorder': 'total ascending'},
-                    #ascending=True
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
 
             # Texte dynamique en fonction du choix de l'utilisateur
             if contrib_option_substances_ino_ub == 'Arsenic inorganique':
@@ -509,17 +549,13 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                 df_filtered_contrib = df_contrib_MB[df_contrib_MB['Substance'].isin([contrib_option_substances_ino_mb])]
 
             # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments")
+            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
             fig.update_xaxes(title="% de la contribution à l’exposition totale")
             fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
             fig.update_layout(
                     yaxis={'categoryorder': 'total ascending'},
-                    #ascending=True
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
             
             # Texte dynamique en fonction du choix de l'utilisateur
             if contrib_option_substances_ino_mb == 'Arsenic inorganique':
@@ -553,7 +589,6 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
 
         with tab3:
             
-            st.markdown("**texte explicatif substances manquantes**")
             col1, col2, col3= st.columns(3)
 
             with col3:
@@ -570,17 +605,13 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
                 df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_lb])]
 
             # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_LB', y="Groupe d'aliments")
+            fig = px.bar(df_filtered_contrib, x='Contribution_LB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
             fig.update_xaxes(title="% de la contribution à l’exposition totale")
             fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
             fig.update_layout(
                     yaxis={'categoryorder': 'total ascending'},
-                    #ascending=True
-                    height=700,
-                    width=1200,  # Augmente la largeur du graphique (ajustez la valeur selon vos besoins)
-                    margin=dict(l=50, r=50, t=50, b=50, pad=4)  # Définit les marges pour centrer le graphique
                 )
-            st.plotly_chart(fig)
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
             # Texte dynamique en fonction du choix de l'utilisateur
             if contrib_option_substances_ino_lb == 'Arsenic inorganique':
@@ -631,13 +662,38 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
 
 # Données - Méthodologie
 if selected == 'Données - Méthodologie':
-    st.header("Liens de nos données")
-    st.subheader("Données fournies par le gouvernement")
-    url = "https://www.data.gouv.fr/fr/datasets/bisphenol-a/"
-    st.markdown("[Bisphenol A](%s)" % url)
+    st.header("Données")
+    st.markdown("Les données intégrées dans cet outil de visualisation sont issues de l’étude de l’alimentation totale (EAT2) menée par l’Anses et publiée en 2014. Ces données sont accessibles sur data.gouv:")
+    
     url = "https://www.data.gouv.fr/fr/datasets/donnees-regionales-eat2-etude-de-l-alimentation-totale/"
-    st.markdown("[Etudes EAT2 ](%s)" % url)
-    st.subheader("Les données retraitées par nos équipes")
+    st.markdown("[Données issues de l’étude EAT2 (Anses, 2014)](%s)" % url)
+    url = "https://www.data.gouv.fr/fr/datasets/bisphenol-a/"
+    st.markdown("[Données aux niveaux de concentration en BPA des différents aliments issus de l’EAT2 (Anses, 2013) ](%s)" % url)
+    
+    st.header("Méthodologie - Traitement des données")
+
+    st.markdown("""La première étape du projet Caliviz a consisté à traiter les données inférieures aux limites de détection ou de quantification, dites données censurées, pour tenir compte des limites analytiques et des spécificités des différentes familles de substances. En fonction des substances et des groupes d’aliments pour lesquels les limites analytiques sont connues ou non, les données censurées étaient renseignées dans les fichiers sous différents formats. Par conséquent, plusieurs prétraitements spécifiques pour les différentes familles de substances ont été ainsi réalisés afin d'harmoniser l’ensemble des données qui seront ensuite intégrées à l’outil de visualisation.
+
+***Formatage de type 1 : Contaminants inorganiques et minéraux - Acrylamide***\n
+Dans ce cas, les données censurées sont uniquement sous la forme “ND/NQ” et les limites analytiques sont connues. La contamination de chaque aliment par chaque substance est estimée en fonction des hypothèses de censure comme suit:
+* Hypothèse moyenne (MB) : ND = LOD/2 et NQ = LOQ/2
+* Hypothèse basse (LB) : ND = 0 et NQ = LOD
+* Hypothèse haute (UB) : ND = LOD et NQ = LOQ
+
+***Formatage de type 2 : HAP - Dioxynes, PC8 - Perfluorés - Bromés***\n
+Dans ce cas, les données censurées sont renseignées la forme “<valeur” et que les limites de détection et/ou de quantification ne sont pas connues. La contamination de chaque aliment par chaque substance est estimée en fonction des hypothèses de censure comme suit: 
+* Hypothèse moyenne (MB) : <valeur = valeur/2
+* Hypothèse basse (LB) : <valeur = 0
+* Hypothèse haute (UB) : <valeur = valeur\n
+
+***Formatage de type 3 : Additifs - Pesticides***\n
+Dans ce cas les données censurées sont sous la forme ND(valeur)/NQ(valeur) et que les limites analytiques ne sont pas fournies. La contamination de chaque aliment par chaque substance est estimée en fonction des hypothèses de censure comme suit:
+* Hypothèse moyenne (MB) : ND(valeur) = valeur/2 et NQ(valeur) = valeur/2
+* Hypothèse basse (LB) : ND(valeur) = 0 et NQ(valeur) = 0
+* Hypothèse haute (UB) : ND(valeur) = valeur et NQ(valeur) = valeur
+""")
+
+    st.subheader("Toutes les données prétraitées sont accessibles ici")
     def main():
         style = f"background-color: #5770BE; border-radius: 5px; padding: 10px; text-align: center; font-size: 16px; color: white;"
         button_html = f'<a href="https://gitlab.com/data-challenge-gd4h/caliviz" target="_blank" style="{style}">GitLab de nos données</a>'
@@ -645,32 +701,3 @@ if selected == 'Données - Méthodologie':
 
     if __name__ == "__main__":
         main()
-    
-    st.header("Notre méthodologie")
-    st.subheader("EAT2 - Méthodologie des valeurs manques")
-    st.markdown("""Les différents types de valeurs présents dans les fichiers utilisés dans le cadre du projet Caliviz étaient les suivantes :
-* ND : non détecté (analytique) (données censurées)
-* NQ : non quantifié (analytique) (données censurées)
-* NR : analyse non réalisée
-* Valeur quantifiée
-
-Les données censurées ont été traitées en utilisant les hypothèses de l’OMS (1995) pour le traitement de la censure et les valeurs de LOD (limite de détection) et LOQ (limite de quantification) correspondants aux substances chimiques étudiées. Plusieurs modèles de formatage ont été ainsi établis en fonction des informations à disposition.
-
-Formatage de type 1 : Contaminants inorganiques et minéraux - Acrylamide\n
-Dans ce cas, les données censurées sont uniquement sous la forme ND/NQ et nous avons accès aux limites analytiques.
-* Hypothèse moyenne (MB) : ND = LOD/2 et NQ = LOQ/2
-* Hypothèse basse (LB) : ND = 0 et NQ = LOD
-* Hypothèse haute (UB) : ND = LOD et NQ = LOQ
-
-Formatage de type 2 : HAP - Dioxynes, PC8 - Perfluorés - Bromés\n
-Dans ce cas, les données censurées sont sous la forme “<valeur” et nous n’avons pas accès aux limites analytiques.
-* Hypothèse moyenne (MB) : <valeur = valeur/2
-* Hypothèse basse (LB) : <valeur = 0
-* Hypothèse haute (UB) : <valeur = valeur\n
-
-Formatage de type 3 : Additifs - Pesticides\n
-Dans ce cas les données censurées sont sous la forme ND(valeur)/NQ(valeur) et nous n’avons pas accès aux limites analytiques.
-* Hypothèse moyenne (MB) : ND(valeur) = valeur/2 et NQ(valeur) = valeur/2
-* Hypothèse basse (LB) : ND(valeur) = 0 et NQ(valeur) = 0
-* Hypothèse haute (UB) : ND(valeur) = valeur et NQ(valeur) = valeur
-""")
