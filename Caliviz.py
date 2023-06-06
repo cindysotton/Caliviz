@@ -1,3 +1,4 @@
+# import des packages
 import streamlit as st
 from PIL import Image
 from streamlit_option_menu import option_menu
@@ -47,9 +48,9 @@ flierprops = dict(marker="X", markerfacecolor='orange', markersize=12,
 
 ####### DATAFRAME à modifier en concervant le nom attribué
 # Famille des Contaminents Inorg et Mineraux
-#df_ino = pd.read_csv('Reformatage_Conta_Inorg_Mineraux_aliment.csv')
 df_ino = pd.read_csv('Contaminants inorg et mineraux.csv')
 
+## RETRAITEMENT DU DF POUR LA VISUALISATION
 # Renommer les colonnes
 df_ino = df_ino.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
 #Suppression des lignes avec la Valeur NR
@@ -79,7 +80,7 @@ duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
 # Supprimer les lignes avec le 'Type' R
 df_ino = df_ino.drop(duplicated_rows_to_remove.index)
 
-
+## AUTRES FICHIERS
 # Contribution LB et UB
 df_contrib_LB_UB = pd.read_csv('Contribution_EAT2_LB_UB.csv')
 # Contribution MB
@@ -94,6 +95,7 @@ UB_pivot_ino = pd.read_csv('UB_Pivot_Inorg_Mineraux.csv')
 
 
 ######## Présentation du projet
+# Choix de l'onglet pour rajouter le contenu
 if selected == "Présentation du projet":
     st.title("Caliviz")
     st.header("Outil interactif permettant la visualisation des substances chimiques auxquelles est exposée la population française via son alimentation")
@@ -154,6 +156,7 @@ if selected == "Présentation du projet":
 if selected == "Les substances":
     st.header("Substances chimiques et risques sanitaires")
 
+    # ajout d'un menu pour filter la famille de substances
     col1, col2, col3= st.columns(3)
 
     with col3:
@@ -164,7 +167,7 @@ if selected == "Les substances":
     #if substances == "Acrylamide":
 
 
-   #if substances == "HAP":
+    #if substances == "HAP":
 
     
     #if substances == "Dioxines, PCB":
@@ -212,6 +215,7 @@ if selected == "Les substances":
 
 ######## Contamination
 if selected == "Contamination":
+    st.markdown("<h2 id='contamination'></h2>", unsafe_allow_html=True)
     st.subheader("Quantification des substances : limites analytiques et hypothèses")
     st.markdown("La quantification d’une substance chimique dans un aliment peut parfois rencontrer des difficultés en raison des limites analytiques. Il s’agit notamment des limites de détection de la substance (LD) dans l’aliment par l’appareil de mesure et/ou de quantification (LQ).")
     st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
@@ -229,6 +233,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 * Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
 \n""")
 
+    # schéma des différentes hypothèses
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
     with col2:
@@ -260,12 +265,14 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         st.markdown("")
 
     if substances == "Contaminants inorganiques":
+      # substances conserver dans l'analyse, les minéraux ont été retiré.
         modalites = ['Arsenic', 'Plomb', 'Cadmium', 'Aluminium', 'Mercure', 'Antimoine', 'Argent', 'Baryum',
              'Etain', 'Gallium', 'Germanium', 'Strontium', 'Tellure', 'Vanadium', 'Nickel', 'Cobalt', 'Chrome']
 
         # Création du nouveau dataframe avec les modalités spécifiées
         df_ino = df_ino[df_ino['Substance'].isin(modalites)]
 
+        # création de 3 onglets pour avoir les représentations par rapport aux 3 hypothèses
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
         df_ino_ali = df_ino.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
         df_ino_groupe = df_ino.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
@@ -423,20 +430,7 @@ if selected == "Aliments contributeurs":
 \nL’exposition est calculée pour tous les individus et une exposition moyenne de la population est ainsi calculée. Elle représente la quantité moyenne d’une substance ingérée par la population via son régime alimentaire total.
 \nSi l’on souhaite connaître la part apportée par chaque groupe d’aliments dans cette quantité de substance ingérée par la population, on parlera de contribution à l’exposition totale. Celle-ci, exprimée en pourcentage, représente la quantité de substance apportée par un groupe d’aliments par rapport à tout le régime alimentaire. La somme des contributions est égale à 100%.
 """)
-    st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
-
-Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
-
-Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
-
-***1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :***
-* Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
-* Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
-
-***2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :***
-* Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
-* Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
-\n""")
+    st.markdown("Pour en savoir plus sur le traitement des données inférieures aux limites analytiques et les hypothèses de censure, voir l’onglet [Contamination](#contamination)")
 
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
