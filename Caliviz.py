@@ -59,7 +59,7 @@ df_ino['UB'] = df_ino['UB'].astype('float')
 df_ino['LB'] = df_ino['LB'].astype('float')
 df_ino['MB'] = df_ino['MB'].astype('float')
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_ino = df_ino.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_ino = df_ino.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_ino = df_ino.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 # Créer un dictionnaire à partir des colonnes "Substance" et "nom substance"
