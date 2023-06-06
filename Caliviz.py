@@ -215,7 +215,7 @@ if selected == "Les substances":
 
 ######## Contamination
 if selected == "Contamination":
-    st.markdown("<h2 id='contamination'></h2>", unsafe_allow_html=True)
+    st.markdown("<h2 id='Contamination'>Contamination</h2>", unsafe_allow_html=True)
     st.subheader("Quantification des substances : limites analytiques et hypothèses")
     st.markdown("La quantification d’une substance chimique dans un aliment peut parfois rencontrer des difficultés en raison des limites analytiques. Il s’agit notamment des limites de détection de la substance (LD) dans l’aliment par l’appareil de mesure et/ou de quantification (LQ).")
     st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
