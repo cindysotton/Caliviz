@@ -428,6 +428,7 @@ if selected == "Aliments contributeurs":
 Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
 
 Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
+
 ***1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :***
 * Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
 * Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
