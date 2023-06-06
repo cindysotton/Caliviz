@@ -22,7 +22,7 @@ width = 80
 st.image(image_logo, width=width)
 
 # paramétrage du menu
-selected = option_menu(None, ['Présentation du projet','Les substances','Contamination','Contribution','Données - Méthodologie'],
+selected = option_menu(None, ['Présentation du projet','Les substances','Contamination','Aliments contributeurs','Données - Méthodologie'],
     icons=['house',"eyedropper",'basket','funnel','clipboard-data','envelope-fill'],
     menu_icon="cast", 
     default_index=0, 
@@ -417,7 +417,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         st.markdown("")
         
 
-if selected == "Contribution":
+if selected == "Aliments contributeurs":
     st.subheader("Exposition alimentaire de la population aux substances chimiques")
     st.markdown("""L’exposition est la quantité d’une substance ingérée par le consommateur. Elle se calcule pour une personne via son alimentation en prenant en compte à la fois le niveau de contamination de tous les différents aliments / groupe d’aliments par cette substance, sa consommation individuelle de ces aliments ainsi que son poids corporel. 
 \nL’exposition est calculée pour tous les individus et une exposition moyenne de la population est ainsi calculée. Elle représente la quantité moyenne d’une substance ingérée par la population via son régime alimentaire total.
