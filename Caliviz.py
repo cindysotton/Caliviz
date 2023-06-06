@@ -215,7 +215,6 @@ if selected == "Les substances":
 
 ######## Contamination
 if selected == "Contamination":
-    st.markdown("<h2 id='Contamination'>Contamination</h2>", unsafe_allow_html=True)
     st.subheader("Quantification des substances : limites analytiques et hypothèses")
     st.markdown("La quantification d’une substance chimique dans un aliment peut parfois rencontrer des difficultés en raison des limites analytiques. Il s’agit notamment des limites de détection de la substance (LD) dans l’aliment par l’appareil de mesure et/ou de quantification (LQ).")
     st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
@@ -430,7 +429,7 @@ if selected == "Aliments contributeurs":
 \nL’exposition est calculée pour tous les individus et une exposition moyenne de la population est ainsi calculée. Elle représente la quantité moyenne d’une substance ingérée par la population via son régime alimentaire total.
 \nSi l’on souhaite connaître la part apportée par chaque groupe d’aliments dans cette quantité de substance ingérée par la population, on parlera de contribution à l’exposition totale. Celle-ci, exprimée en pourcentage, représente la quantité de substance apportée par un groupe d’aliments par rapport à tout le régime alimentaire. La somme des contributions est égale à 100%.
 """)
-    st.markdown("Pour en savoir plus sur le traitement des données inférieures aux limites analytiques et les hypothèses de censure, voir l’onglet [Contamination](#contamination)")
+    st.markdown("Pour en savoir plus sur le traitement des données inférieures aux limites analytiques et les hypothèses de censure, ***voir l’onglet Contamination***")
 
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
