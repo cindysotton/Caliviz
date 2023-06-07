@@ -18,7 +18,7 @@ st.set_page_config(page_title='Caliviz',
     )
 
 # logo ANSES
-image_logo = Image.open('Logo_Anses.svg')
+image_logo = Image.open('Logo_Anses.png')
 width = 80
 st.image(image_logo, width=width)
 
