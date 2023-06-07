@@ -274,7 +274,11 @@ df_per = df_per.drop(duplicated_rows_to_remove.index)
 
 
 ## Famille des Pesticides
-df_pesti = pd.read_csv('Contamination/Pesticides.csv')
+df_pesti1 = pd.read_csv('Contamination/Pesticides1.csv')
+df_pesti2 = pd.read_csv('Contamination/Pesticides2.csv')
+df_pesti = pd.concat([df_pesti1, df_pesti2])
+df_pesti = df_pesti.reset_index(drop=True)
+
 
 # Renommer les colonnes
 df_pesti = df_pesti.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
