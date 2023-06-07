@@ -18,7 +18,7 @@ st.set_page_config(page_title='Caliviz',
     )
 
 # logo ANSES
-width = 80
+width = 100
 st.image("media/Logo_Anses.png", width=width)
 
 # paramétrage du menu
