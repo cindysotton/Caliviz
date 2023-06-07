@@ -47,7 +47,7 @@ flierprops = dict(marker="X", markerfacecolor='orange', markersize=12,
 
 ####### DATAFRAME à modifier en concervant le nom attribué
 # Famille des Contaminents Inorg et Mineraux
-df_ino = pd.read_csv('Contaminants inorg et mineraux.csv')
+df_ino = pd.read_csv('Contamination/Contaminants inorg et mineraux.csv')
 
 ## RETRAITEMENT DU DF POUR LA VISUALISATION
 # Renommer les colonnes
@@ -272,7 +272,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
         with tab1:
             st.markdown("")
-            st.image("media/Heatmap_ino_LB.png", use_column_width=True)
+            st.image("Heatmap/Heatmap_ino_LB.png", use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -313,7 +313,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
         with tab2:
             st.markdown("")
-            st.image("media/Heatmap_ino_MB.png", use_column_width=True)
+            st.image("Heatmap/Heatmap_ino_MB.png", use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -358,7 +358,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
     
         with tab3:
             st.markdown("")
-            st.image("media/Heatmap_ino_UB.png", use_column_width=True)
+            st.image("Heatmap/Heatmap_ino_UB.png", use_column_width=True)
 
 
             col1, col2, col3 = st.columns(3)
