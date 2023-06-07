@@ -60,7 +60,7 @@ df_ino['MB'] = df_ino['MB'].astype('float')
 df_ino= df_ino.replace(to_replace=0, value=np.nan)
 df_ino = df_ino.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_ino = df_ino.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_ino = df_ino.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_ino = df_ino.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 # Créer un dictionnaire à partir des colonnes "Substance" et "nom substance"
@@ -95,7 +95,7 @@ df_accry['MB'] = df_accry['MB'].astype('float')
 df_accry= df_accry.replace(to_replace=0, value=np.nan)
 df_accry = df_accry.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_accry = df_accry.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_accry = df_accry.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_accry = df_accry.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 
@@ -129,7 +129,7 @@ df_addi['MB'] = df_addi['MB'].astype('float')
 df_addi= df_addi.replace(to_replace=0, value=np.nan)
 df_addi = df_addi.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_addi = df_addi.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_addi = df_addi.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_addi = df_addi.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 
@@ -160,7 +160,7 @@ df_bro['MB'] = df_bro['MB'].astype('float')
 df_bro= df_bro.replace(to_replace=0, value=np.nan)
 df_bro = df_bro.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_bro = df_bro.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_bro = df_bro.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_bro = df_bro.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 
@@ -192,7 +192,7 @@ df_dio['MB'] = df_dio['MB'].astype('float')
 df_dio= df_dio.replace(to_replace=0, value=np.nan)
 df_dio = df_dio.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_dio = df_dio.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_dio = df_dio.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_dio = df_dio.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 
@@ -224,7 +224,7 @@ df_hap['MB'] = df_hap['MB'].astype('float')
 df_hap = df_hap.replace(to_replace=0, value=np.nan)
 df_hap = df_hap.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_hap = df_hap.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_hap = df_hap.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_hap = df_hap.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 
@@ -256,7 +256,7 @@ df_per['MB'] = df_per['MB'].astype('float')
 df_per  = df_per.replace(to_replace=0, value=np.nan)
 df_per = df_per.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_per = df_per.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_per = df_per.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_per = df_per.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 
@@ -288,7 +288,7 @@ df_pesti['MB'] = df_pesti['MB'].astype('float')
 df_pesti  = df_pesti.replace(to_replace=0, value=np.nan)
 df_pesti = df_pesti.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_pesti = df_pesti.drop(["Date", "Région", "Vague","Unité"], axis=1)
+df_pesti = df_pesti.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_pesti = df_pesti.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 
