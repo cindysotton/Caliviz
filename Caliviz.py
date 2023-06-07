@@ -85,12 +85,6 @@ df_ino = df_ino.drop(duplicated_rows_to_remove.index)
 df_contrib_LB_UB = pd.read_csv('Contribution_EAT2_LB_UB.csv')
 # Contribution MB
 df_contrib_MB = pd.read_csv('Contribution_EAT2_MB.csv')
-# LB = hypithèse basse
-LB_pivot_ino = pd.read_csv('LB_Pivot_Inorg_Mineraux.csv')
-# MB = hypithèse moyenne
-MB_pivot_ino = pd.read_csv('MB_Pivot_Inorg_Mineraux.csv')
-# UB = hypithèse haute
-UB_pivot_ino = pd.read_csv('UB_Pivot_Inorg_Mineraux.csv')
 #######
 
 
