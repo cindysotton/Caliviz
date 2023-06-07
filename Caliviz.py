@@ -81,9 +81,9 @@ df_ino = df_ino.drop(duplicated_rows_to_remove.index)
 
 ## AUTRES FICHIERS
 # Contribution LB et UB
-df_contrib_LB_UB = pd.read_csv('Contribution_EAT2_LB_UB.csv')
+df_contrib_LB_UB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_LB_UB.csv')
 # Contribution MB
-df_contrib_MB = pd.read_csv('Contribution_EAT2_MB.csv')
+df_contrib_MB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_MB.csv')
 #######
 
 
