@@ -18,9 +18,8 @@ st.set_page_config(page_title='Caliviz',
     )
 
 # logo ANSES
-image_logo = Image.open('Logo_Anses.png')
 width = 80
-st.image(image_logo, width=width)
+st.image("media/Logo_Anses.png", width=width)
 
 # paramétrage du menu
 selected = option_menu(None, ['Présentation du projet','Les substances','Contamination','Aliments contributeurs','Données - Méthodologie'],
@@ -93,8 +92,7 @@ df_contrib_MB = pd.read_csv('Contribution_EAT2_MB.csv')
 if selected == "Présentation du projet":
     st.title("Caliviz")
     st.header("Outil interactif permettant la visualisation des substances chimiques auxquelles est exposée la population française via son alimentation")
-    image = Image.open('alimentation-banderole.jpg')
-    st.image(image, use_column_width=True)
+    st.image("media/alimentation-banderole.jpg", use_column_width=True)
     st.subheader("Enjeux")
     st.markdown("Selon les résultats de la dernière édition de l’étude de l’alimentation totale (EAT), le risque sanitaire ne peut être exclu dans certains groupes de la population pour 12 substances présentes dans notre alimentation courante. Aujourd’hui, la surveillance alimentaire est réalisée aléatoirement. Une optimisation de la surveillance via l’identification et le ciblage des couples aliments/substances qui posent problème est donc d’utilité publique, visant in fine à protéger le consommateur.")
     st.markdown("**Comment optimiser la sécurité sanitaire des aliments et la surveillance des couples aliments/substances qui posent véritablement problème ?**")
@@ -230,9 +228,8 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
     with col2:
-        image_hypothese = Image.open('Hypotheses_Analyses.png')
         width = 700
-        st.image(image_hypothese, width=width)
+        st.image("media/Hypotheses_Analyses.png", width=width)
     
     
     col1, col2, col3 = st.columns(3)
@@ -275,8 +272,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
         with tab1:
             st.markdown("")
-            image = Image.open('Heatmap_ino_LB.png')
-            st.image(image, use_column_width=True)
+            st.image("media/Heatmap_ino_LB.png", use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -317,8 +313,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
         with tab2:
             st.markdown("")
-            image = Image.open('Heatmap_ino_MB.png')
-            st.image(image, use_column_width=True)
+            st.image("media/Heatmap_ino_MB.png", use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -363,8 +358,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
     
         with tab3:
             st.markdown("")
-            image = Image.open('Heatmap_ino_UB.png')
-            st.image(image, use_column_width=True)
+            st.image("media/Heatmap_ino_UB.png", use_column_width=True)
 
 
             col1, col2, col3 = st.columns(3)
@@ -428,9 +422,8 @@ if selected == "Aliments contributeurs":
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
     with col2:
-        image_hypothese = Image.open('Hypotheses_Analyses.png')
         width = 700
-        st.image(image_hypothese, width=width)
+        st.image("media/Hypotheses_Analyses.png", width=width)
 
     col1, col2, col3= st.columns(3)
 
