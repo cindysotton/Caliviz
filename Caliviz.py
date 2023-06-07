@@ -44,12 +44,10 @@ flierprops = dict(marker="X", markerfacecolor='orange', markersize=12,
 
 
 #######
-
 ####### DATAFRAME à modifier en concervant le nom attribué
-# Famille des Contaminents Inorg et Mineraux
+## Famille des Contaminents Inorg et Mineraux
 df_ino = pd.read_csv('Contamination/Contaminants inorg et mineraux.csv')
 
-## RETRAITEMENT DU DF POUR LA VISUALISATION
 # Renommer les colonnes
 df_ino = df_ino.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
 #Suppression des lignes avec la Valeur NR
@@ -58,8 +56,11 @@ df_ino = df_ino.drop(df_ino[df_ino["Contamination rapportée"] == "NR"].index)
 df_ino['UB'] = df_ino['UB'].astype('float')
 df_ino['LB'] = df_ino['LB'].astype('float')
 df_ino['MB'] = df_ino['MB'].astype('float')
+# Supression des NaN
+df_ino= df_ino.replace(to_replace=0, value=np.nan)
+df_ino = df_ino.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
 #Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
-df_ino = df_ino.drop(["Date", "Région", "Vague","Unité","Contamination rapportée"], axis=1)
+df_ino = df_ino.drop(["Date", "Région", "Vague","Unité"], axis=1)
 #Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
 df_ino = df_ino.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
 # Créer un dictionnaire à partir des colonnes "Substance" et "nom substance"
@@ -79,11 +80,240 @@ duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
 # Supprimer les lignes avec le 'Type' R
 df_ino = df_ino.drop(duplicated_rows_to_remove.index)
 
-## AUTRES FICHIERS
+## Famille des Acrylamide
+df_accry = pd.read_csv('Contamination/Acrylamide.csv')
+
+# Renommer les colonnes
+df_accry = df_accry.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+#Suppression des lignes avec la Valeur NR
+df_accry = df_accry.drop(df_accry[df_accry["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_accry['UB'] = df_accry['UB'].astype('float')
+df_accry['LB'] = df_accry['LB'].astype('float')
+df_accry['MB'] = df_accry['MB'].astype('float')
+# Supression des NaN
+df_accry= df_accry.replace(to_replace=0, value=np.nan)
+df_accry = df_accry.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_accry = df_accry.drop(["Date", "Région", "Vague","Unité"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_accry = df_accry.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_accry[df_accry['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_accry[df_accry.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_accry = df_accry.drop(duplicated_rows_to_remove.index)
+
+
+## Famille des Additifs
+df_addi = pd.read_csv('Contamination/Additifs.csv')
+
+# Renommer les colonnes
+df_addi = df_addi.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+# Renommer les modalités trop longue:
+df_addi = df_addi.replace(to_replace=['Sulfites   (E220, E221, E222, E223, E224, E226, E227 et E228)','Nitrites  (E249-250)'], value=['Sulfites','Nitrites'])
+#Suppression des lignes avec la Valeur NR
+df_addi = df_addi.drop(df_addi[df_addi["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_addi['UB'] = df_addi['UB'].astype('float')
+df_addi['LB'] = df_addi['LB'].astype('float')
+df_addi['MB'] = df_addi['MB'].astype('float')
+# Supression des NaN
+df_addi= df_addi.replace(to_replace=0, value=np.nan)
+df_addi = df_addi.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_addi = df_addi.drop(["Date", "Région", "Vague","Unité"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_addi = df_addi.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_addi[df_addi['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_addi[df_addi.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_addi = df_addi.drop(duplicated_rows_to_remove.index)
+
+## Famille des Bromes
+df_bro = pd.read_csv('Contamination/Bromes.csv')
+
+# Renommer les colonnes
+df_bro = df_bro.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+#Suppression des lignes avec la Valeur NR
+df_bro = df_bro.drop(df_bro[df_bro["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_bro['UB'] = df_bro['UB'].astype('float')
+df_bro['LB'] = df_bro['LB'].astype('float')
+df_bro['MB'] = df_bro['MB'].astype('float')
+# Supression des NaN
+df_bro= df_bro.replace(to_replace=0, value=np.nan)
+df_bro = df_bro.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_bro = df_bro.drop(["Date", "Région", "Vague","Unité"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_bro = df_bro.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_bro[df_bro['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_bro[df_bro.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_bro = df_bro.drop(duplicated_rows_to_remove.index)
+
+
+## Famille des Dioxines PCB
+df_dio = pd.read_csv('Contamination/Dioxines PCB.csv')
+
+# Renommer les colonnes
+df_dio = df_dio.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+#Suppression des lignes avec la Valeur NR
+df_dio = df_dio.drop(df_dio[df_dio["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_dio['UB'] = df_dio['UB'].astype('float')
+df_dio['LB'] = df_dio['LB'].astype('float')
+df_dio['MB'] = df_dio['MB'].astype('float')
+# Supression des NaN
+df_dio= df_dio.replace(to_replace=0, value=np.nan)
+df_dio = df_dio.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_dio = df_dio.drop(["Date", "Région", "Vague","Unité"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_dio = df_dio.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_dio[df_dio['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_dio[df_dio.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_dio = df_dio.drop(duplicated_rows_to_remove.index)
+
+
+## Famille des HAP
+df_hap = pd.read_csv('Contamination/HAP.csv')
+
+# Renommer les colonnes
+df_hap = df_hap.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+#Suppression des lignes avec la Valeur NR
+df_hap = df_hap.drop(df_hap[df_hap["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_hap['UB'] = df_hap['UB'].astype('float')
+df_hap['LB'] = df_hap['LB'].astype('float')
+df_hap['MB'] = df_hap['MB'].astype('float')
+# Supression des NaN
+df_hap = df_hap.replace(to_replace=0, value=np.nan)
+df_hap = df_hap.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_hap = df_hap.drop(["Date", "Région", "Vague","Unité"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_hap = df_hap.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_hap[df_hap['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_hap[df_hap.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_hap = df_hap.drop(duplicated_rows_to_remove.index)
+
+
+## Famille des Perfluores
+df_per = pd.read_csv('Contamination/Perfluores.csv')
+
+# Renommer les colonnes
+df_per = df_per.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+#Suppression des lignes avec la Valeur NR
+df_per = df_per.drop(df_per[df_per["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_per['UB'] = df_per['UB'].astype('float')
+df_per['LB'] = df_per['LB'].astype('float')
+df_per['MB'] = df_per['MB'].astype('float')
+# Supression des NaN
+df_per  = df_per.replace(to_replace=0, value=np.nan)
+df_per = df_per.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_per = df_per.drop(["Date", "Région", "Vague","Unité"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_per = df_per.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_per[df_per['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_per[df_per.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_per = df_per.drop(duplicated_rows_to_remove.index)
+
+
+## Famille des Pesticides
+df_pesti = pd.read_csv('Contamination/Pesticides.csv')
+
+# Renommer les colonnes
+df_pesti = df_pesti.rename(columns={'Libellé' : 'Aliment',"Groupe de la nomenclature INCA 2":"Groupe"})
+#Suppression des lignes avec la Valeur NR
+df_pesti = df_pesti.drop(df_pesti[df_pesti["Contamination rapportée"] == "NR"].index)
+#Changer le type des colonnes LB UB MB en valeur décimale
+df_pesti['UB'] = df_pesti['UB'].astype('float')
+df_pesti['LB'] = df_pesti['LB'].astype('float')
+df_pesti['MB'] = df_pesti['MB'].astype('float')
+# Supression des NaN
+df_pesti  = df_pesti.replace(to_replace=0, value=np.nan)
+df_pesti = df_pesti.dropna(axis = 0, how = 'all', subset = ['LB', 'UB', 'MB'])
+#Suppression des colonnes qui sont inutiles dans le cadre de la représentation graphique : Date, Région, Vague
+df_pesti = df_pesti.drop(["Date", "Région", "Vague","Unité"], axis=1)
+#Fusionner les lignes (moyenne) pour avoir un détail régional et national par aliment
+df_pesti = df_pesti.groupby(["Groupe","Aliment","Type","Famille de substances","Substance"], as_index=False).mean()
+
+# Garder juste une ligne entre R et N
+# Filtrer les lignes avec le 'Type' R
+rows_to_remove = df_pesti[df_pesti['Type'] == 'R']
+# Sélectionner les colonnes pour l'identification des doublons
+cols_to_check = ['Groupe', 'Aliment', 'Famille de substances', 'Substance']
+# Identifier les lignes à supprimer avec le même 'Groupe', 'Aliment','Famille de substances' et 'Substance' pour les deux 'Types' R et N
+duplicated_rows = df_pesti[df_pesti.duplicated(subset=cols_to_check, keep=False)]
+# Filtrer les lignes à supprimer avec le 'Type' R
+duplicated_rows_to_remove = duplicated_rows[duplicated_rows['Type'] == 'R']
+# Supprimer les lignes avec le 'Type' R
+df_pesti = df_pesti.drop(duplicated_rows_to_remove.index)
+
+
+
+
+### Fichier contribution
 # Contribution LB et UB
-df_contrib_LB_UB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_LB_UB.csv')
+df_contrib_LB_UB = pd.read_csv('Contribution_EAT2_LB_UB.csv')
 # Contribution MB
-df_contrib_MB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_MB.csv')
+df_contrib_MB = pd.read_csv('Contribution_EAT2_MB.csv')
+###
+
 #######
 
 
@@ -237,48 +467,29 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
     with col3:
         substances = st.selectbox(
         "Choix de la famille de substances",
-        ('Contaminants inorganiques','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
-
+        ('Contaminants inorganiques','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Additifs','Pesticides'))
+        
     if substances == "Acrylamide":
-        st.markdown("")
-
-    if substances == "HAP":
-        st.markdown("")
-    
-    if substances == "Dioxines, PCB":
-        st.markdown("")
-
-    if substances == "Perfluorés":
-        st.markdown("")
-    
-    if substances == "Bromés":
-        st.markdown("")
-
-    if substances == "Contaminants inorganiques":
-      # substances conserver dans l'analyse, les minéraux ont été retiré.
-        modalites = ['Arsenic', 'Plomb', 'Cadmium', 'Aluminium', 'Mercure', 'Antimoine', 'Argent', 'Baryum',
-             'Etain', 'Gallium', 'Germanium', 'Strontium', 'Tellure', 'Vanadium', 'Nickel', 'Cobalt', 'Chrome']
+        modalites = ['Acrylamide']
 
         # Création du nouveau dataframe avec les modalités spécifiées
-        df_ino = df_ino[df_ino['Substance'].isin(modalites)]
+        df_accry = df_accry[df_accry['Substance'].isin(modalites)]
 
-        # création de 3 onglets pour avoir les représentations par rapport aux 3 hypothèses
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
-        df_ino_ali = df_ino.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
-        df_ino_groupe = df_ino.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+        df_accry_ali = df_accry.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_accry_groupe = df_accry.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
 
-        choix_substances = df_ino['Substance'].unique()
-        choix_groupe = df_ino['Groupe'].unique()
+        choix_substances = df_accry['Substance'].unique()
+        choix_groupe = df_accry['Groupe'].unique()
 
         with tab1:
-            st.markdown("")
-            st.image("Heatmap/Heatmap_ino_LB.png", use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
             with col3:
-                substances_LB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB")
-                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_LB]
+                substances_LB_accry = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB_accry")
+                df_filtered_substance = df_accry_groupe[df_accry_groupe['Substance'] == substances_LB_accry]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
 
             fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -293,13 +504,11 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             col1, col2, col3 = st.columns(3)
             with col3:
                 #Groupe
-                choix_groupe = df_ino_ali['Groupe'].unique().astype(str).tolist()
-                # Définir la valeur par défaut
-                valeur_par_defaut = "Crustacés et mollusques"
-                # Trouver l'index correspondant à la valeur par défaut
-                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
-                groupe_LB= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB")
-                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_LB) & (df_ino_ali['Substance'] == substances_LB)]
+                choix_groupe = df_accry_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_LB_accry= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_LB_accry")
+                df_filtered_groupe = df_accry_ali.loc[(df_accry_ali['Groupe'] == groupe_LB_accry) & (df_accry_ali['Substance'] == substances_LB_accry)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['LB'])
     
             fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -312,14 +521,720 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
         with tab2:
-            st.markdown("")
-            st.image("Heatmap/Heatmap_ino_MB.png", use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
             with col3:
-                substances_MB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB")
-                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_MB]
+                substances_MB_accry = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_accry")
+                df_filtered_substance = df_accry_groupe[df_accry_groupe['Substance'] == substances_MB_accry]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
+                
+
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_accry_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_MB_accry = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_MB_accry")
+                df_filtered_groupe = df_accry_ali.loc[(df_accry_ali['Groupe'] == groupe_MB_accry) & (df_accry_ali['Substance'] == substances_MB_accry)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['MB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+    
+        with tab3:
+
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_UB_accry = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_accry")
+                df_filtered_substance = df_accry_groupe[df_accry_groupe['Substance'] == substances_UB_accry]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
+
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                groupe_UB_accry = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB_accry")
+                df_filtered_groupe = df_accry_ali.loc[(df_accry_ali['Groupe'] == groupe_UB_accry) & (df_accry_ali['Substance'] == substances_UB_accry)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['UB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+    if substances == "HAP":
+        modalites = ['PHE', 'AN', 'FA', 'PY', 'BaA', 'CPP', 'CHR', 'MCH', 'BbF', 'BjF',
+       'BkF', 'BaP', 'IP', 'DBahA', 'BghiP', 'DbalP', 'DbaeP', 'DbaiP',
+       'DbahP', 'BcFL']
+
+       # Création du nouveau dataframe avec les modalités spécifiées
+        df_hap = df_hap[df_hap['Substance'].isin(modalites)]
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+        df_hap_ali = df_hap.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_hap_groupe = df_hap.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+
+        choix_substances = df_hap['Substance'].unique()
+        choix_groupe = df_hap['Groupe'].unique()
+
+        with tab1:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_LB_hap = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB_hap")
+                df_filtered_substance = df_hap_groupe[df_hap_groupe['Substance'] == substances_LB_hap]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
+
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+            with col3:
+                #Groupe
+                choix_groupe = df_hap_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "substances_UB_hap"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+                groupe_LB_hap= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB_hap")
+
+                df_filtered_groupe = df_hap_ali.loc[(df_hap_ali['Groupe'] == groupe_LB_hap) & (df_hap_ali['Substance'] == substances_LB_hap)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['LB'])
+    
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab2:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_MB_hap = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_hap")
+                df_filtered_substance = df_hap_groupe[df_hap_groupe['Substance'] == substances_MB_hap]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
+                
+
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_hap_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_MB_hap = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_MB_hap")
+                df_filtered_groupe = df_hap_ali.loc[(df_hap_ali['Groupe'] == groupe_MB_hap) & (df_hap_ali['Substance'] == substances_MB_hap)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['MB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+    
+        with tab3:
+
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_UB_hap = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_hap")
+                df_filtered_substance = df_hap_groupe[df_hap_groupe['Substance'] == substances_UB_hap]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
+
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                groupe_UB_hap = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB_hap")
+                df_filtered_groupe = df_hap_ali.loc[(df_hap_ali['Groupe'] == groupe_UB_hap) & (df_hap_ali['Substance'] == substances_UB_hap)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['UB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+       
+
+    
+    if substances == "Dioxines, PCB":
+        modalites = ['TCDD_2378', 'PCDD_12378', 'HCDD_123478', 'HCDD_123678',
+       'HCDD_123789', 'HCDD_1234678', 'OCDD', 'TCDF_2378', 'PCDF_12378',
+       'PCDF_23478', 'HCDF_123478', 'HCDF_123678', 'HCDF_234678',
+       'HCDF_123789', 'HCDF_1234678', 'HCDF_1234789', 'OCDF', 'PCB_77',
+       'PCB_81', 'PCB_126', 'PCB_169', 'PCB_105', 'PCB_114', 'PCB_118',
+       'PCB_123', 'PCB_156', 'PCB_157', 'PCB_167', 'PCB_189', 'PCB_28']
+
+       # Création du nouveau dataframe avec les modalités spécifiées
+        df_dio = df_dio[df_dio['Substance'].isin(modalites)]
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+        df_dio_ali = df_dio.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_dio_groupe = df_dio.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+
+        choix_substances = df_dio['Substance'].unique()
+        choix_groupe = df_dio['Groupe'].unique()
+
+        with tab1:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_LB_dio = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB_dio")
+                df_filtered_substance = df_dio_groupe[df_dio_groupe['Substance'] == substances_LB_dio]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
+
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+            with col3:
+                #Groupe
+                choix_groupe = df_dio_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_LB_dio= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_LB_dio")
+                df_filtered_groupe = df_dio_ali.loc[(df_dio_ali['Groupe'] == groupe_LB_dio) & (df_dio_ali['Substance'] == substances_LB_dio)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['LB'])
+    
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab2:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_MB_dio = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_dio")
+                df_filtered_substance = df_dio_groupe[df_dio_groupe['Substance'] == substances_MB_dio]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
+                
+
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_dio_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_MB_dio = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_MB_dio")
+                df_filtered_groupe = df_dio_ali.loc[(df_dio_ali['Groupe'] == groupe_MB_dio) & (df_dio_ali['Substance'] == substances_MB_dio)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['MB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+    
+        with tab3:
+
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_UB_dio = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_dio")
+                df_filtered_substance = df_dio_groupe[df_dio_groupe['Substance'] == substances_UB_dio]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
+
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                groupe_UB_dio = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB_dio")
+                df_filtered_groupe = df_dio_ali.loc[(df_dio_ali['Groupe'] == groupe_UB_dio) & (df_dio_ali['Substance'] == substances_UB_dio)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['UB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+       
+
+    if substances == "Perfluorés":
+        modalites = ['PFOS', 'PFBS', 'PFHxS', 'PFHpS', 'PFDS', 'PFOA', 'PFBA', 'PFPA',
+       'PFHxA', 'PFHpA', 'PFNA', 'PFDA', 'PFUnA', 'PFDoA', 'PFTrDA',
+       'PFTeDA']
+
+       # Création du nouveau dataframe avec les modalités spécifiées
+        df_per = df_per[df_per['Substance'].isin(modalites)]
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+        df_per_ali = df_per.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_per_groupe = df_per.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+
+        choix_substances = df_per['Substance'].unique()
+        choix_groupe = df_per['Groupe'].unique()
+
+        with tab1:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                choix_substances = ['PFOS', 'PFBS', 'PFHxS', 'PFOA', 'PFHxA', 'PFHpA', 'PFNA', 'PFDA','PFUnA', 'PFDoA', 'PFTrDA', 'PFTeDA']
+                substances_LB_per = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB_per")
+                df_filtered_substance = df_per_groupe[df_per_groupe['Substance'] == substances_LB_per]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
+
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+            with col3:
+                #Groupe
+                choix_groupe = df_per_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Crustacés et mollusques"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+                groupe_LB_per= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB_per")
+                df_filtered_groupe = df_per_ali.loc[(df_per_ali['Groupe'] == groupe_LB_per) & (df_per_ali['Substance'] == substances_LB_per)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['LB'])
+    
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab2:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_MB_per = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_per")
+                df_filtered_substance = df_per_groupe[df_per_groupe['Substance'] == substances_MB_per]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
+                
+
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_per_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_MB_per = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_MB_per")
+                df_filtered_groupe = df_per_ali.loc[(df_per_ali['Groupe'] == groupe_MB_per) & (df_per_ali['Substance'] == substances_MB_per)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['MB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+    
+        with tab3:
+
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_UB_per = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_per")
+                df_filtered_substance = df_per_groupe[df_per_groupe['Substance'] == substances_UB_per]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
+
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                groupe_UB_per = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB_per")
+                df_filtered_groupe = df_per_ali.loc[(df_per_ali['Groupe'] == groupe_UB_per) & (df_per_ali['Substance'] == substances_UB_per)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['UB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        
+
+    
+    if substances == "Bromés":
+        modalites = ['HBCD alpha', 'HBCD beta', 'HBCD gamma', 'BB52', 'BB101', 'BB153',
+       'BDE28', 'BDE47', 'BDE99', 'BDE100', 'BDE153', 'BDE154', 'BDE183',
+       'BDE209']
+
+       # Création du nouveau dataframe avec les modalités spécifiées
+        df_bro = df_bro[df_bro['Substance'].isin(modalites)]
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+        df_bro_ali = df_bro.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_bro_groupe = df_bro.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+
+        choix_substances = df_bro['Substance'].unique()
+        choix_groupe = df_bro['Groupe'].unique()
+
+        with tab1:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_LB_bro = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB_bro")
+                df_filtered_substance = df_bro_groupe[df_bro_groupe['Substance'] == substances_LB_bro]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
+
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+            with col3:
+                #Groupe
+                choix_groupe = df_bro_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Poissons"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+                groupe_LB_bro= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB_bro")
+                df_filtered_groupe = df_bro_ali.loc[(df_bro_ali['Groupe'] == groupe_LB_bro) & (df_bro_ali['Substance'] == substances_LB_bro)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['LB'])
+    
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab2:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_MB_bro = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_bro")
+                df_filtered_substance = df_bro_groupe[df_bro_groupe['Substance'] == substances_MB_bro]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
+                
+
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_bro_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_MB_bro = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_MB_bro")
+                df_filtered_groupe = df_bro_ali.loc[(df_bro_ali['Groupe'] == groupe_MB_bro) & (df_bro_ali['Substance'] == substances_MB_bro)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['MB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+    
+        with tab3:
+
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_UB_bro = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_bro")
+                df_filtered_substance = df_bro_groupe[df_bro_groupe['Substance'] == substances_UB_bro]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
+
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                groupe_UB_bro = st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB_bro")
+                df_filtered_groupe = df_bro_ali.loc[(df_bro_ali['Groupe'] == groupe_UB_bro) & (df_bro_ali['Substance'] == substances_UB_bro)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['UB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        
+
+    if substances == "Contaminants inorganiques":
+        modalites = ['Arsenic', 'Plomb', 'Cadmium', 'Aluminium', 'Mercure', 'Antimoine', 'Argent', 'Baryum',
+             'Etain', 'Gallium', 'Germanium', 'Strontium', 'Tellure', 'Vanadium', 'Nickel', 'Cobalt', 'Chrome']
+
+        # Création du nouveau dataframe avec les modalités spécifiées
+        df_ino = df_ino[df_ino['Substance'].isin(modalites)]
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+        df_ino_ali = df_ino.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_ino_groupe = df_ino.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+
+        choix_substances = df_ino['Substance'].unique()
+        choix_groupe = df_ino['Groupe'].unique()
+
+        with tab1:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_ino_LB.png')
+            st.image(image, use_column_width=True)
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_LB_ino = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_LB_ino")
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_LB_ino]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
+
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+            with col3:
+                #Groupe
+                choix_groupe = df_ino_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Crustacés et mollusques"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+                groupe_LB_ino= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB_ino")
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_LB_ino) & (df_ino_ali['Substance'] == substances_LB_ino)]
+    
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)
+            fig.update_layout(
+                yaxis={'categoryorder': 'total ascending'},
+                legend_title_text='Substances',
+            )
+
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab2:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_ino_MB.png')
+            st.image(image, use_column_width=True)
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_MB_ino = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_ino")
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_MB_ino]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
 
             fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -340,8 +1255,8 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
                 valeur_par_defaut = "Crustacés et mollusques"
                 # Trouver l'index correspondant à la valeur par défaut
                 index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
-                groupe_MB= st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_MB")
-                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_MB) & (df_ino_ali['Substance'] == substances_MB)]
+                groupe_MB_ino= st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_MB_ino")
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_MB_ino) & (df_ino_ali['Substance'] == substances_MB_ino)]
     
 
             fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
@@ -358,14 +1273,16 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
     
         with tab3:
             st.markdown("")
-            st.image("Heatmap/Heatmap_ino_UB.png", use_column_width=True)
+            image = Image.open('Heatmap/Heatmap_ino_UB.png')
+            st.image(image, use_column_width=True)
 
 
             col1, col2, col3 = st.columns(3)
     
             with col3:
-                substances_UB = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB")
-                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_UB]
+                substances_UB_ino = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_ino")
+                df_filtered_substance = df_ino_groupe[df_ino_groupe['Substance'] == substances_UB_ino]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
 
             fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
             fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
@@ -381,8 +1298,159 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             col1, col2, col3 = st.columns(3)
     
             with col3:
-                groupe_UB= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB")
-                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_UB) & (df_ino_ali['Substance'] == substances_UB)]
+                groupe_UB_ino= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_UB_ino")
+                df_filtered_groupe = df_ino_ali.loc[(df_ino_ali['Groupe'] == groupe_UB_ino) & (df_ino_ali['Substance'] == substances_UB_ino)]
+    
+
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+    
+    if substances == "Additifs":
+        modalites = ['Sulfites', 'Nitrites', 'Rocou  (E160b)','Acide tartrique  (E334)']
+
+        # Création du nouveau dataframe avec les modalités spécifiées
+        df_addi = df_addi[df_addi['Substance'].isin(modalites)]
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+        df_addi_ali = df_addi.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_addi_groupe = df_addi.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+
+        choix_substances = df_addi['Substance'].unique()
+        choix_groupe = df_addi['Groupe'].unique()
+
+        with tab1:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_addi_groupe['Substance'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Acide tartrique  (E334)"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+
+                substances_LB_addi = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances,index=index_valeur_par_defaut, key="substances_LB_addi")
+                df_filtered_substance = df_addi_groupe[df_addi_groupe['Substance'] == substances_LB_addi]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
+
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+            with col3:
+                #Groupe
+                choix_groupe = df_addi_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_LB_addi= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_LB_addi")
+                df_filtered_groupe = df_addi_ali.loc[(df_addi_ali['Groupe'] == groupe_LB_addi) & (df_addi_ali['Substance'] == substances_LB_addi)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['LB'])
+    
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab2:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_MB_addi = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_addi")
+                df_filtered_substance = df_addi_groupe[df_addi_groupe['Substance'] == substances_MB_addi]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
+                
+
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_addi_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Charcuterie"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+
+                groupe_MB_addi = st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_MB_addi")
+                df_filtered_groupe = df_addi_ali.loc[(df_addi_ali['Groupe'] == groupe_MB_addi) & (df_addi_ali['Substance'] == substances_MB_addi)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['MB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+    
+        with tab3:
+
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_UB_addi = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_addi")
+                df_filtered_substance = df_addi_groupe[df_addi_groupe['Substance'] == substances_UB_addi]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
+
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_addi_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Charcuterie"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+
+                groupe_UB_addi = st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_UB_addi")
+                df_filtered_groupe = df_addi_ali.loc[(df_addi_ali['Groupe'] == groupe_UB_addi) & (df_addi_ali['Substance'] == substances_UB_addi)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['UB'])
     
 
             fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
@@ -396,19 +1464,257 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
 
-     
-    
-    if substances == "Phytoestrogènes":
-        st.markdown("")
-    
-    if substances == "Mycotoxines":
-        st.markdown("")
-    
-    if substances == "Additifs":
-        st.markdown("")
-
     if substances == "Pesticides":
-        st.markdown("")
+        modalites = ['Abamectin', 'Acephate', 'Acetamiprid', 'Acibenzolar-S-methyl',
+       'Acrinathrin', 'Aldicarb', 'Aldicarb-sulfone',
+       'Aldicarb-sulfoxide', 'Aldrin', 'Allethrin-bioallethrin',
+       'Alphamethrin', 'Amitraz', 'Anthraquinone', 'Atrazine',
+       'Atrazine-d-s-thyl-d-isopropyl', 'Azametiphos', 'Azinphos-ethyl',
+       'Azinphos-methyl', 'Azocyclotin', 'Azoxystrobin', 'Benalaxyl',
+       'Bendiocarb', 'Benfuracarb', 'Benomyl', 'Bifenthrin', 'Binapacryl',
+       'Bioallethrine-Depallethrin', 'Bioresmethrin', 'Biphenyl',
+       'Bitertanol', 'Boscalid', 'Bromophos-bromophos-methyl',
+       'Bromophos-ethyl', 'Bromopropylate', 'Bromuconazole', 'Bupirimate',
+       'Buprofezin', 'Cadusafos', 'Camphechlor-Toxaphene', 'Captafol',
+       'Captan', 'Carbaryl', 'Carbendazim', 'Carbetamide', 'Carbofuran',
+       'Carbophenothion', 'Carbosulfan', 'Carboxin', 'Chinomethionat',
+       'Chlordan-Alpha', 'Chlordan-Gamma', 'Chlordane', 'Chlorfenvinphos',
+       'Chlorfluazuron', 'Chlormephos', 'Chlorobenzilate',
+       'Chlorofenizon', 'Chloropropylate', 'Chlorothalonil',
+       'Chlorpropham', 'Chlorpyrifos-ethyl', 'Chlorpyrifos-methyl',
+       'Chlortal-dimethyl', 'Chlozolinate', 'Clofentezine', 'Coumaphos',
+       'Cyanofenphos', 'Cyanophos', 'Cyfluthrin', 'Cyhexatin',
+       'Cymoxanil', 'Cypermethrin', 'Cyproconazole', 'Cyprodinyl',
+       'Cyromazine', 'DDD-4-4-TDE', 'DDE-4-4', 'DDT-2-4', 'DDT-4-4',
+       'Deltamethrin', 'Demeton-S-methylsulphon', 'Desmetryne',
+       'Di-allate', 'Dialiphos', 'Diazinon', 'Dicamba', 'Dichlobenil',
+       'Dichlofenthion', 'Dichlofluanid', 'Dichloran', 'Dichlorprop-P',
+       'Dichlorvos', 'Diclobutrazol', 'Dicofol', 'Dieldrin', 'Dienochlor',
+       'Diethofencarb', 'Difenoconazole', 'Diflubenzuron', 'Dimethoate',
+       'Dimethomorph', 'Diniconazole', 'Dinocap', 'Dioxacarb',
+       'Diphenylamine', 'Diquat', 'Disulfoton', 'Ditalimfos',
+       'Dithiocarbamates', 'Diuron', 'Endosulfan-Alpha',
+       'Endosulfan-Beta', 'Endosulfan-Sulfate', 'Endosulfan', 'Endrin',
+       'Endrin-ketone', 'Epoxiconazole', 'Esfenvalerate', 'Ethiofencarb',
+       'Ethion', 'Ethirimol', 'Ethoprophos', 'Ethoxyquin', 'Etofenprox',
+       'Etridiazole', 'Etrimfos', 'Fenamidone', 'Fenamiphos',
+       'Fenamiphos-sulfone', 'Fenarimol', 'Fenazaquin', 'Fenbuconazole',
+       'Fenbutatin-oxide', 'Fenchlorphos', 'Fenhexamid', 'Fenitrothion',
+       'Fenoxycarb', 'Fenpropathrin', 'Fenpropidine', 'Fenpropimorph',
+       'Fenpyroximate', 'Fenson', 'Fenthion', 'Fenthion-sulfone',
+       'Fenthion-sulfoxide', 'Fentin-acetate', 'Fentin-hydroxide',
+       'Fenvalerate', 'Fipronil', 'Fluazifop-P-butyl', 'Flubenzimine',
+       'Fludioxonyl', 'Flufenoxuron', 'Fluquinconazole', 'Flusilazole',
+       'Flutolanil', 'Flutriafol', 'Fluvalinate', 'Folpet', 'Fonofos',
+       'Formothion', 'Furalaxyl', 'Furathiocarb', 'HCH', 'HCH-alpha',
+       'HCH-beta', 'HCH-delta', 'Haloxyfop', 'Heptachlor',
+       'Heptachlor-epoxide', 'Heptachlore-poxyde-cis',
+       'Heptachlore-poxyde-trans', 'Heptenophos', 'Hexachlorobenzene',
+       'Hexaconazole', 'Hexaflumuron', 'Hexythiazox',
+       'Hydroxycarbofuran-3', 'Imazalil', 'Imidacloprid', 'Indoxacarbe',
+       'Iodofenphos', 'Iprodione', 'Iprovalicarb', 'Isazofos',
+       'Isofenphos', 'Isofenphos-methyl', 'Kresoxim-methyl',
+       'Lambda-Cyhalothrin', 'Lindane-HCH-gamma', 'Linuron', 'Malaoxon',
+       'Malathion', 'Mecarbam', 'Mepanipyrim', 'Mepiquat', 'Mepronil',
+       'Metalaxyl', 'Metconazole', 'Methacrifos', 'Methamidophos',
+       'Methidathion', 'Methiocarb', 'Methiocarb-sulfone',
+       'Methiocarb-sulfoxyde', 'Methomyl', 'Methoxychlor', 'Metolachlor',
+       'Metoxuron', 'Metrafenone', 'Metribuzine', 'Mevinphos', 'Mirex',
+       'Monalid', 'Monocrotophos', 'Myclobutanil', 'Naled', 'Nitrofen',
+       'Nitrothal-isopropyl', 'Nuarimol', 'Ofurace', 'Omethoate',
+       'Oxadixyl', 'Oxamyl', 'Oxydemeton-methyl',
+       'P-p-Dichlorobenzophenon', 'Paraoxon', 'Paraoxon-methyl',
+       'Paraquat', 'Parathion', 'Parathion-methyl', 'Penconazole',
+       'Pencycuron', 'Pendimethalin', 'Pentachloroaniline',
+       'Pentachloroanisole', 'Pentachlorophenol',
+       'Pentachlorophenol-acetate', 'Permethrin', 'Phorate',
+       'Phorate-Sulfone', 'Phorate-sulfoxide', 'Phosalone', 'Phosmet',
+       'Phosmet-oxon', 'Phosphamidon', 'Phoxim', 'Picoxystrobin',
+       'Piperonyl-butoxide', 'Pirimiphos-ethyl', 'Pirimiphos-methyl',
+       'Prochloraz', 'Procymidone', 'Profenofos', 'Promecarb',
+       'Prometryn', 'Propachlor', 'Propamocarb', 'Propargite',
+       'Propetamphos', 'Propham', 'Propiconazole', 'Propoxur',
+       'Propyzamid', 'Prothiofos', 'Pymetrozine', 'Pyraclostrobin',
+       'Pyrazophos', 'Pyrethrins', 'Pyridaben', 'Pyridaphenthion',
+       'Pyridate', 'Pyrimethanil', 'Pyrimicarb', 'Pyriproxyfen',
+       'Quinalphos', 'Quinoxyfen', 'Quintozene', 'Rotenon', 'Simazine',
+       'Spiroxamine', 'Sulfotep', 'Sulfur', 'Tau-Fluvalinate',
+       'Tebuconazole', 'Tebufenozid', 'Tebufenpyrad', 'Tecnazene',
+       'Teflubenzuron', 'Tefluthrin', 'Temefos', 'Terbufos',
+       'Tetrachlorvinphos', 'Tetraconazole', 'Tetradifon', 'Tetramethrin',
+       'Tetrasul', 'Thiabendazole', 'Thiodicarb', 'Thiometon',
+       'Thiophanate-methyl', 'Toclofos-methyl', 'Tolylfluanide',
+       'Tralomethrin', 'Tri-allate', 'Triadimefon', 'Triadimenol',
+       'Triazophos', 'Tribromoanisole', 'Tribromophenol-2-4-6',
+       'Trichlorfon', 'Trichloronat', 'Trifloxystrobin', 'Triflumuron',
+       'Trifluralin', 'Triforine', 'Triticonazole', 'Vamidothion',
+       'Vinclozolin', '2-4-D', '2-Phenylphenol (incl, OPP)',
+       '3-5-Dichloroaniline']
+
+       # Création du nouveau dataframe avec les modalités spécifiées
+        df_pesti = df_pesti[df_pesti['Substance'].isin(modalites)]
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+        df_pesti_ali = df_pesti.groupby(['Aliment','Substance' ]).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean', "Groupe":lambda x: x.mode().iat[0]}).reset_index()
+        df_pesti_groupe = df_pesti.groupby(['Groupe', 'Substance']).agg({'LB': 'mean', 'UB': 'mean', 'MB': 'mean'}).reset_index()
+
+        choix_substances = df_pesti['Substance'].unique()
+        choix_groupe = df_pesti['Groupe'].unique()
+
+        with tab1:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                
+                #Groupe
+                choix_groupe = ['Acrinathrin', 'Azinphos-methyl', 'Azoxystrobin', 'Bifenthrin',
+       'Boscalid', 'Bupirimate', 'Captan', 'Carbendazim', 'Carbofuran',
+       'Chlorfenvinphos', 'Chlorothalonil', 'Chlorpropham',
+       'Chlorpyrifos-ethyl', 'Chlorpyrifos-methyl', 'Chlortal-dimethyl',
+       'Cyproconazole', 'Cyprodinyl', 'Diethofencarb', 'Dimethoate',
+       'Diphenylamine', 'Endosulfan-Beta', 'Endosulfan-Sulfate', 'Ethion',
+       'Ethoxyquin', 'Etofenprox', 'Fenbuconazole', 'Fenhexamid',
+       'Fludioxonyl', 'Flutriafol', 'Folpet', 'Imazalil', 'Iprodione',
+       'Kresoxim-methyl', 'Lambda-Cyhalothrin', 'Lindane-HCH-gamma',
+       'Mepanipyrim', 'Metalaxyl', 'Myclobutanil', 'Omethoate',
+       'Phosalone', 'Phosmet', 'Piperonyl-butoxide', 'Pirimiphos-methyl',
+       'Procymidone', 'Propargite', 'Pyrimethanil', 'Pyriproxyfen',
+       'Quinoxyfen', 'Sulfur', 'Tebuconazole', 'Teflubenzuron',
+       'Tetradifon', 'Thiabendazole', 'Thiophanate-methyl', 'Triadimenol',
+       'Triflumuron', 'Vinclozolin', '2-Phenylphenol (incl, OPP)']
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Iprodione"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+
+                substances_LB_pesti = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances,index=index_valeur_par_defaut, key="substances_LB_pesti")
+                df_filtered_substance = df_pesti_groupe[df_pesti_groupe['Substance'] == substances_LB_pesti]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['LB'])
+
+            fig = px.bar(df_filtered_substance, x='LB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+            with col3:
+                #Groupe
+                choix_groupe = df_pesti_ali['Groupe'].unique().astype(str).tolist()
+
+                groupe_LB_pesti= st.selectbox("Choix du groupe d'aliments", choix_groupe, key="groupe_LB_pesti")
+                df_filtered_groupe = df_pesti_ali.loc[(df_pesti_ali['Groupe'] == groupe_LB_pesti) & (df_pesti_ali['Substance'] == substances_LB_pesti)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['LB'])
+    
+            fig = px.bar(df_filtered_groupe, x='LB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab2:
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_MB_pesti = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_MB_pesti")
+                df_filtered_substance = df_pesti_groupe[df_pesti_groupe['Substance'] == substances_MB_pesti]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['MB'])
+                
+
+            fig = px.bar(df_filtered_substance, x='MB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_pesti_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Légumes (hors pomme de terre)"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+
+                groupe_MB_pesti = st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_MB_pesti")
+                df_filtered_groupe = df_pesti_ali.loc[(df_pesti_ali['Groupe'] == groupe_MB_pesti) & (df_pesti_ali['Substance'] == substances_MB_pesti)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['MB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='MB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+    
+        with tab3:
+
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                substances_UB_pesti = st.selectbox("Sélectionner la substance que vous souhaitez analyser :", choix_substances, key="substances_UB_pesti")
+                df_filtered_substance = df_pesti_groupe[df_pesti_groupe['Substance'] == substances_UB_pesti]
+                df_filtered_substance = df_filtered_substance.dropna(axis = 0, how = 'all', subset = ['UB'])
+
+            fig = px.bar(df_filtered_substance, x='UB', y='Groupe')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                      yaxis={'categoryorder': 'total ascending'},
+                      legend_title_text='Substances',
+                      #ascending=True
+
+                  )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+            col1, col2, col3 = st.columns(3)
+    
+            with col3:
+                #Groupe
+                choix_groupe = df_pesti_ali['Groupe'].unique().astype(str).tolist()
+                # Définir la valeur par défaut
+                valeur_par_defaut = "Légumes (hors pomme de terre)"
+                # Trouver l'index correspondant à la valeur par défaut
+                index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
+
+                groupe_UB_pesti = st.selectbox("Choix du groupe d'aliments", choix_groupe,index=index_valeur_par_defaut, key="groupe_UB_pesti")
+                df_filtered_groupe = df_pesti_ali.loc[(df_pesti_ali['Groupe'] == groupe_UB_pesti) & (df_pesti_ali['Substance'] == substances_UB_pesti)]
+                df_filtered_groupe = df_filtered_groupe.dropna(axis = 0, how = 'all', subset = ['UB'])
+    
+
+            fig = px.bar(df_filtered_groupe, x='UB', y='Aliment')
+            fig.update_xaxes(title="Concentration dans l'aliment en µg/g")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                    legend_title_text='Substances',
+                    #ascending=True
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+  
+
         
 
 if selected == "Aliments contributeurs":
