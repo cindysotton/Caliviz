@@ -316,6 +316,8 @@ df_pesti = df_pesti.drop(duplicated_rows_to_remove.index)
 df_contrib_LB_UB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_LB_UB.csv')
 # Contribution MB
 df_contrib_MB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_MB.csv')
+# Aliments contributeurs
+df_contrib = pd.read_excel('Aliments_Contributeurs.xlsx')
 ###
 
 #######
@@ -1763,58 +1765,447 @@ if selected == "Aliments contributeurs":
 \nL’exposition est calculée pour tous les individus et une exposition moyenne de la population est ainsi calculée. Elle représente la quantité moyenne d’une substance ingérée par la population via son régime alimentaire total.
 \nSi l’on souhaite connaître la part apportée par chaque groupe d’aliments dans cette quantité de substance ingérée par la population, on parlera de contribution à l’exposition totale. Celle-ci, exprimée en pourcentage, représente la quantité de substance apportée par un groupe d’aliments par rapport à tout le régime alimentaire. La somme des contributions est égale à 100%.
 """)
-    st.markdown("Pour en savoir plus sur le traitement des données inférieures aux limites analytiques et les hypothèses de censure, ***voir l’onglet Contamination***")
+    st.markdown("""Une substance est dite « détectée » dès lors que l’analyse a mis en évidence sa présence dans un aliment. Dans le cas contraire, la substance sera inférieure à la limite de détection (<LD).
+
+Une substance est dite « quantifiée » lorsqu’elle a été détectée et que sa teneur est suffisamment importante pour être quantifiée. Si la teneur est très basse et que l’appareil analytique n’est pas en mesure de la quantifier, elle est seulement dite « détectée » mais inférieure à la limite de quantification (<LQ).
+
+Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été retenus conformément aux lignes directrices (GEMS-Food Euro, 1995) : 
+***1.    le pourcentage de résultats <LD et <LQ est inférieur à 60%, les données sont remplacées par une hypothèse moyenne dite « middle bound (MB) » :***
+* Toutes les valeurs non détectées (<LD) sont fixées à ½ LD.
+* Toutes les valeurs non quantifiées (<LQ) sont fixées à ½ LQ.
+
+***2.    le pourcentage de résultats <LD et <LQ est supérieur à 60%, les données sont remplacées par deux hypothèses :***
+* Hypothèse basse dite « lower bound (LB) » où toutes les valeurs non détectées (<LD) sont fixées à zéro et toutes les valeurs non quantifiées (<LQ) sont fixées à la LD ou à 0 si la LD n’est pas renseignée.
+* Hypothèse haute dite « upper bound (UB) » où toutes les valeurs non détectées (<LD) sont fixées à la LD et toutes les valeurs non quantifiées (<LQ) sont fixées à la LQ.\n
+\n""")
 
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
     with col2:
+        image_hypothese = Image.open('Hypotheses_Analyses.png')
         width = 700
-        st.image("media/Hypotheses_Analyses.png", width=width)
+        st.image(image_hypothese, width=width)
 
     col1, col2, col3= st.columns(3)
 
     with col3:
         substances = st.selectbox(
         "Choix de la famille de substances",
-        ('Contaminants inorganiques et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
+        ('Contaminants inorganiques et minéraux','Accrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
-    if substances == "Acrylamide":
-        st.markdown("")
-
-    if substances == "HAP":
-        st.markdown("")
-    
-    if substances == "Dioxines, PCB":
-        st.markdown("")
-
-    if substances == "Perfluorés":
-        st.markdown("")
-    
-    if substances == "Bromés":
-        st.markdown("")
-
-    if substances == "Contaminants inorganiques et minéraux":
+    if substances == "Accrylamide":
+        df_contrib_accry  = (df_contrib[(df_contrib['Famille'] == 'Acrylamide')])
 
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
 
-        with tab1:
-            
+        with tab1 :
+            st.markdown("")
+        
+        with tab2 :
             col1, col2, col3= st.columns(3)
 
             with col3:
               #SelectBox
+              df_contrib_accry_mb = df_contrib_accry.dropna(axis = 0, how = 'all', subset = ['Contribution_MB'])
+              contrib_option_substances_accry_mb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  "Acrylamide",
+                                                  key='substances_accry_mb_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_accry_mb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_accry_mb[df_contrib_accry_mb['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_accry_mb[df_contrib_accry_mb['Substance'].isin([contrib_option_substances_accry_mb])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab3 :
+            st.markdown("")
+
+    if substances == "HAP":
+        df_contrib_hap  = (df_contrib[(df_contrib['Famille'] == 'HAP')])
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+
+        with tab1 :
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_hap_lb = df_contrib_hap.dropna(axis = 0, how = 'all', subset = ['Contribution_LB'])
+              contrib_option_substances_hap_lb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_hap_lb['Substance'].unique(),
+                                                  key='substances_hap_lb_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_hap_lb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_hap_lb[df_contrib_hap_lb['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_hap_lb[df_contrib_hap_lb['Substance'].isin([contrib_option_substances_hap_lb])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_LB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+        
+        with tab2 :
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_hap_mb = df_contrib_hap.dropna(axis = 0, how = 'all', subset = ['Contribution_MB'])
+              contrib_option_substances_hap_mb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_hap_mb['Substance'].unique(),
+                                                  key='substances_hap_mb_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_hap_mb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_hap_mb[df_contrib_hap_mb['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_hap_mb[df_contrib_hap_mb['Substance'].isin([contrib_option_substances_hap_mb])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+        with tab3 :
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_hap_ub = df_contrib_hap.dropna(axis = 0, how = 'all', subset = ['Contribution_UB'])
+              contrib_option_substances_hap_ub = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_hap_ub['Substance'].unique(),
+                                                  key='substances_hap_ub_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_hap_ub]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_hap_ub[df_contrib_hap_ub['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_hap_ub[df_contrib_hap_ub['Substance'].isin([contrib_option_substances_hap_ub])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+            
+    
+    if substances == "Dioxines, PCB":
+        df_contrib_dio  = (df_contrib[(df_contrib['Famille'] == 'Dioxines')])
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+
+        with tab1 :
+            st.markdown("")
+
+        with tab2 :
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_dio_mb = df_contrib_dio.dropna(axis = 0, how = 'all', subset = ['Contribution_MB'])
+              contrib_option_substances_dio_mb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_dio_mb['Substance'].unique(),
+                                                  key='substances_dio_mb_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_dio_mb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_dio_mb[df_contrib_dio_mb['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_dio_mb[df_contrib_dio_mb['Substance'].isin([contrib_option_substances_dio_mb])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+        with tab3 :
+            st.markdown("")
+
+    if substances == "Perfluorés":
+        df_contrib_per  = (df_contrib[(df_contrib['Famille'] == 'Perfluores')])
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+
+        with tab1 :
+            st.markdown("")
+
+        with tab2 :
+            st.markdown("")
+        
+        with tab3 :
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_per_ub = df_contrib_per.dropna(axis = 0, how = 'all', subset = ['Contribution_UB'])
+              contrib_option_substances_per_ub = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_per_ub['Substance'].unique(),
+                                                  key='substances_per_ub_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_per_ub]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_per_ub[df_contrib_per_ub['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_per_ub[df_contrib_per_ub['Substance'].isin([contrib_option_substances_per_ub])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+    
+    if substances == "Bromés":
+        df_contrib_bro  = (df_contrib[(df_contrib['Famille'] == 'Bromes')])
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+
+        with tab1 :
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_bro_lb = df_contrib_bro.dropna(axis = 0, how = 'all', subset = ['Contribution_LB'])
+              contrib_option_substances_bro_lb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_bro_lb['Substance'].unique(),
+                                                  key='substances_bro_lb_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_bro_lb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_bro_lb[df_contrib_bro_lb['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_bro_lb[df_contrib_bro_lb['Substance'].isin([contrib_option_substances_bro_lb])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_LB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+        
+        with tab2 :
+            st.markdown("")
+        
+        
+        with tab3:
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_bro_ub = df_contrib_bro.dropna(axis = 0, how = 'all', subset = ['Contribution_UB'])
+              contrib_option_substances_bro_ub = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_bro_ub['Substance'].unique(),
+                                                  key='substances_bro_ub_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_bro_ub]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_bro_ub[df_contrib_bro_ub['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_bro_ub[df_contrib_bro_ub['Substance'].isin([contrib_option_substances_bro_ub])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+    if substances == "Contaminants inorganiques et minéraux":
+
+        df_contrib_ino  = (df_contrib[(df_contrib['Famille'] == 'Contaminants inorganiques et minéraux')])
+
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
+
+        
+        with tab1:
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_ino_lb = df_contrib_ino.dropna(axis = 0, how = 'all', subset = ['Contribution_LB'])
+              contrib_option_substances_ino_lb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_ino_lb['Substance'].unique(),
+                                                  key='substances_ino_lb_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_ino_lb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_ino_lb[df_contrib_ino_lb['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_ino_lb[df_contrib_ino_lb['Substance'].isin([contrib_option_substances_ino_lb])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_LB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+            # Texte dynamique en fonction du choix de l'utilisateur
+            if contrib_option_substances_ino_lb == 'Arsenic inorganique':
+                st.caption("L’arsenic (As) est un élément présent dans la croûte terrestre. Il provient également des activités industrielles, de la combustion de produits fossiles, d'anciennes utilisations agricoles, etc. Il existe sous différentes formes chimiques, organiques ou inorganiques. Par ingestion, l’arsenic peut entraîner des lésions cutanées, des cancers, une toxicité sur le développement, une neurotoxicité, des maladies cardiovasculaires, une perturbation du métabolisme du glucose et du diabète.")
+            elif contrib_option_substances_ino_lb == 'Plomb':
+                st.caption("Le plomb (Pb) est un métal naturellement présent dans la croûte terrestre. Son utilisation intensive par l’homme (activités minières et industrielles : fonderies, accumulateurs, pigments, alliages, munitions, etc.) est à l’origine d’une forte dispersion dans l’environnement. L’homme y est exposé principalement par les aliments et l’eau qu’il consomme, mais aussi via l’air, le sol et les poussières. Du fait de son interdiction depuis la fin des années 90 dans l’essence automobile, les peintures utilisées à l’intérieur des habitations et les canalisations d’eau, le niveau d’exposition a fortement diminué ces dix dernières années. Chez l’homme, le principal organe cible est le système nerveux central, en particulier au cours du développement chez le foetus et le jeune enfant. Chez l’adulte, le plomb a des effets sur les reins et sur le système cardiovasculaire.")
+            elif contrib_option_substances_ino_lb == 'Cadmium':
+                st.caption("Le cadmium (Cd) est un métal lourd qui se retrouve dans les différents compartiments de l’environnement (sols, eau, air) du fait de sa présence à l’état naturel dans la croûte terrestre et des activités industrielles et agricoles.  La source principale d’exposition au cadmium varie selon le type de population : l’alimentation pour la population générale, la fumée de cigarette et l’air ambiant pour les travailleurs exposés en milieu industriel.Chez l’homme, une exposition prolongée au cadmium par voie orale induit une atteinte rénale. Une fragilité osseuse, des troubles de la reproduction ont également été répertoriés, ainsi qu’un risque accru de cancer ayant donné lieu à un classement comme « cancérogène pour l’homme » (groupe 1) par le Centre International de Recherche sur le Cancer (CIRC) en 1993.")
+            elif contrib_option_substances_ino_lb == 'Aluminium':
+                st.caption("L’aluminium (Al) est l’élément métallique le plus abondant de la croûte terrestre. Du fait de ses propriétés physico-chimiques (basse densité, malléabilité, résistance à la corrosion, etc.), il est utilisé dans de nombreux domaines industriels (agro-alimentaire, pharmaceutique, bâtiment, etc.) et pour le traitement des eaux d’alimentation. Il est présent dans les aliments et l’eau sous différentes formes chimiques qui déterminent sa toxicité. Les effets toxiques de l’aluminium portent essentiellement sur le système nerveux central (encéphalopathies, troubles psychomoteurs) et sur le tissu osseux. Chez l’homme, ces effets sont observés chez des sujets exposés par d’autres voies que l’alimentation, conduisant à l’accumulation de fortes quantités d’aluminium : patients insuffisants rénaux dialysés, alimentation parentérale, personnes professionnellement exposées. ")
+            elif contrib_option_substances_ino_lb == 'Antimoine':
+                st.caption("L’antimoine (Sb) est un métalloïde très peu abondant dans la croûte terrestre. Il est utilisé dans les alliages métalliques pour en accroître la dureté, dans la fabrication de semi-conducteurs, dans les plastiques et les feux d’artifices. Le trioxyde d’antimoine est employé comme ignifugeant pour les textiles et les matières plastiques, comme opacifiant pour les verres, les céramiques et les émaux, comme pigment pour les peintures et comme catalyseur chimique. Le trioxyde d’antimoine a été classé considéré comme « peut-être cancérogène pour l’homme » (groupe 2B) par le Centre International de Recherche sur le Cancer (CIRC) en 1989. Les sels solubles d’antimoine provoquent, après ingestion, des effets irritants au niveau gastro-intestinal se traduisant par des vomissements, des crampes abdominales et des diarrhées. Une toxicité cardiaque ou oculaire est aussi rapportée à fortes doses. ")
+            elif contrib_option_substances_ino_lb == 'Baryum':
+                st.caption("Le baryum (Ba) est un métal présent dans de nombreux minerais. Son utilisation concerne de nombreux domaines (pesticides, textiles, pigments, traitement d’eaux, médical, etc.).Les sels solubles de baryum sont bien absorbés et se déposent essentiellement au niveau du tissu osseux. Il n’a pas été démontré d’effet cancérogène ni mutagène (altération de la structure de l'ADN). Les travailleurs exposés régulièrement par inhalation au baryum peuvent présenter des manifestations pulmonaires bénignes sans troubles fonctionnels associés. ")
+            elif contrib_option_substances_ino_lb == 'Gallium':
+                st.caption("Le gallium (Ga) est un métal provenant essentiellement de l’extraction de l’aluminium et du zinc. Essentiellement sous forme de sels, il est utilisé en petite quantité pour la fabrication de semi-conducteurs, dans l’industrie électrique et électronique ; c’est un substitut du mercure pour les lampes à arc et les thermomètres pour hautes températures. Plusieurs utilisations médicales sont décrites : traceur radioactif, alliage dentaires, traitement des hypercalcémies tumorales. Dans le contexte de l’exposition professionnelle, le gallium et ses composés pénètrent par voie respiratoire, et très peu par voie digestive. La rétention de gallium au niveau pulmonaire est certaine chez l’animal. L’absorption à partir du tube digestif semble faible. Il est transporté par le sang, et se distribue dans le foie, la rate, les tissus osseux et la moelle osseuse. La toxicité est basée essentiellement sur des études animales et varie selon les espèces et les composés du gallium. Les organes cibles sont le poumon, le système hématopoïétique (ormation des globules sanguins), le système immunitaire, le rein et l’appareil reproducteur male.  L’arséniure de gallium est classé par le Centre International de Recherche sur le Cancer parmi les « cancérogènes pour l’homme » (groupe 1) en s’appuyant surtout sur des données expérimentales animales et sans en avoir démontré le mécanisme d’action.")
+            elif contrib_option_substances_ino_lb == 'Germanium':
+                st.caption("Le germanium (Ge) est un métalloïde présent naturellement dans la croûte terrestre. Il peut exister sous forme organique ou inorganique. Généralement obtenu à partir du raffinage du cuivre, du zinc et du plomb, il est utilisé principalement dans le secteur de l’électronique (diodes, transistors, etc.) et du verre (élément optique) du fait de ses propriétés proches de celles du silicium. Dans certains pays, il est également commercialisé sous forme organique en tant que complément alimentaire. L’absorption du germanium au niveau intestinal est rapide et complète. Son élimination est principalement urinaire. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérigène sous ses formes ioniques ou dioxyde de germanium. Plusieurs cas rapportés de patients exposés de manière répétée à de fortes doses de germanium (complément alimentaire) indiquent notamment des perturbations au niveau rénal.")
+            elif contrib_option_substances_ino_lb == 'Tellure':
+                st.caption("Le tellure (Te) est un metalloïde issu principalement des résidus d’affinage du cuivre. Il est utilisé principalement en métallurgie (alliage), dans l’industrie chimique (caoutchouc, plastique) et dans l’électronique. Le tellure est absorbé par ingestion et éliminé en partie dans les urines. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérogène. Des effets tératogènes (susceptible de provoquer des malformations congénitales chez les enfants exposés in utero) ont été observés chez des rats exposés oralement à des doses élevées de tellure dans la nourriture. En milieu professionnel, l’exposition par inhalation au tellure peut engendrer des symptômes sans gravité particulière, caractérisés essentiellement par une haleine alliacée.")
+            elif contrib_option_substances_ino_lb == 'Vanadium':
+                st.caption("Le vanadium (V) est un métal que l’on retrouve à l’état naturel. Il est principalement utilisé en métallurgie pour augmenter la résistance des aciers, et dans d’autres industries pour ses propriétés catalytiques, colorantes ou anticorrosives. Le rôle fonctionnel du vanadium n’a pas été clairement caractérisé chez l’animal ou chez l’homme. Selon la dose, le vanadium pourrait avoir des effets sur les métabolismes lipidique et glucidique et dans la fonction thyroïdienne. Le vanadium est peu absorbé par voie orale (<1%). Chez l’animal, les études expérimentales indiquent que les effets les plus sensibles observés suite à l’ingestion de sels de vanadium sont des perturbations au niveau sanguin (pression artérielle et taux de globules rouges), des systèmes nerveux et rénal et du développement. Des études expérimentales sur un composé de vanadium (le pentoxyde de vanadium) révèlent d’autres effets toxiques (atteinte de la rate, des reins, des poumons et cancers) mais la présence de cette forme dans les aliments n’a jamais été démontrée. ")
+            elif contrib_option_substances_ino_lb == 'Nickel':
+                st.caption("Le nickel (Ni) est un métal naturellement présent dans la croûte terrestre dont les propriétés de malléabilité, de magnétisme, de conduction de la chaleur et de l’électricité conduisent à le retrouver dans de très nombreuses applications industrielles principalement sous forme d’alliages (aciers inoxydables) et de catalyseurs pour les constructions automobile, navale et aéronautique, et les industries électriques. Le nickel se retrouve sous une grande variété de formes chimiques inorganiques (métal, oxydes, sels) ou organiques. L’homme y est exposé par inhalation (exposition professionnelle), par la consommation d’eau et d’aliments et par contact cutané. Dans ce dernier cas, il est allergisant et peut provoquer une dermatite de contact. Les effets cancérogènes des composés du nickel observés après une exposition par inhalation ont conduit à une classification par le Centre International de Recherche sur le Cancer (CIRC) parmi les « cancérogènes pour l’homme » (groupe 1). Toutefois, aucune étude par voie orale n’a montré d’effet cancérogène. Aucun composé du nickel n’est actuellement classé comme mutagène (altération dela structure de l'ADN).")
+            elif contrib_option_substances_ino_lb == 'Cobalt':
+                st.caption("Le cobalt (Co) est un métal naturellement présent dans la croûte terrestre. Le cobalt et ses composés minéraux ont de nombreuses applications dans l’industrie chimique et pétrolière comme catalyseur, pour la fabrication d’alliages, comme pigment pour le verre et les céramiques, comme agent séchant des peintures, etc. Il est également utilisé en tant qu’additif dans les aliments pour animaux pour les espèces capables de synthétiser la vitamine B12. On trouve le cobalt dans les produits animaux (sous forme de cobalamine) et dans les végétaux (sous forme inorganique). Chez l'homme, le cobalt absorbé est majoritairement retrouvé dans le foie et les reins. Chez l’animal, les effets toxiques rapportés avec des sels de cobalt comprennent une polycythémie (augmentation de la masse érythrocytaire totale), des modifications cardiaques, des altérations fonctionnelles et morphologiques de la thyroïde, une dégénérescence et une atrophie testiculaires, une réduction de la croissance et de la survie de la descendance. Chez l’homme, des cardiomyopathies ont été rapportées dans les années 60 chez des forts buveurs de bière, auxquelles avait été ajouté du cobalt en tant qu’agent stabilisateur de mousse. Les composés du cobalt (II) ont été classés par le Centre International de Recherche surle Cancer (CIRC) comme « peut-être cancérogènes pour l’homme » (groupe 2B). Des études ont montré que les sels de cobalt sont capables d’induire des altérations génotoxiques tels que des dommages à l’ADN, des mutations géniques, la formation de micronoyaux, des aberrations chromosomiques chez l’animal par voie orale ou parentérale.")
+            elif contrib_option_substances_ino_lb == 'Chrome':
+                st.caption("Le chrome (Cr), un métal abondant dans la croûte terrestre, est utilisé dans des alliages métalliques tels que l’acier inoxydable, en pigments, pour le tannage des peaux, etc. L’homme y est exposé par inhalation et par la consommation d’eau et d’aliments. Chez l’homme, la déficience en chrome a été observée chez des patients recevant une nutrition parentérale totale sur le long terme. Les symptômes sont une altération de l’utilisation et de la tolérance au glucose, une altération du métabolisme lipidique, une altération du métabolisme de l’azote, une perte de poids. En cas de carences profondes, des effets neurologiques peuvent être observés. Chez l’enfant, aucune carence en chrome n’a été décrite en dehors d’une malnutrition protéino-énergétique sévère. Le chrome présente une toxicité nettement différente en fonction de sa valence. Différents composés du chrome sont génotoxiques et sont classés par le Centre International de Recherche sur le Cancer comme « cancérogènes pour l’homme » (groupe 1), du fait d’un excès de risque de cancer du poumon chez les professionnels exposés par inhalation. Par voie orale, certaines données suggèrent une augmentation de l’incidence de cancer de l’estomac chez l’Homme exposé par l’eau de boisson. ")
+
+        with tab2:
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_ino_mb = df_contrib_ino.dropna(axis = 0, how = 'all', subset = ['Contribution_MB'])
+              contrib_option_substances_ino_mb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_ino_mb['Substance'].unique(),
+                                                  key='substances_ino_mb_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_ino_mb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_ino_mb[df_contrib_ino_mb['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_ino_mb[df_contrib_ino_mb['Substance'].isin([contrib_option_substances_ino_mb])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
+
+            # Texte dynamique en fonction du choix de l'utilisateur
+            if contrib_option_substances_ino_mb == 'Arsenic inorganique':
+                st.caption("L’arsenic (As) est un élément présent dans la croûte terrestre. Il provient également des activités industrielles, de la combustion de produits fossiles, d'anciennes utilisations agricoles, etc. Il existe sous différentes formes chimiques, organiques ou inorganiques. Par ingestion, l’arsenic peut entraîner des lésions cutanées, des cancers, une toxicité sur le développement, une neurotoxicité, des maladies cardiovasculaires, une perturbation du métabolisme du glucose et du diabète.")
+            elif contrib_option_substances_ino_mb == 'Plomb':
+                st.caption("Le plomb (Pb) est un métal naturellement présent dans la croûte terrestre. Son utilisation intensive par l’homme (activités minières et industrielles : fonderies, accumulateurs, pigments, alliages, munitions, etc.) est à l’origine d’une forte dispersion dans l’environnement. L’homme y est exposé principalement par les aliments et l’eau qu’il consomme, mais aussi via l’air, le sol et les poussières. Du fait de son interdiction depuis la fin des années 90 dans l’essence automobile, les peintures utilisées à l’intérieur des habitations et les canalisations d’eau, le niveau d’exposition a fortement diminué ces dix dernières années. Chez l’homme, le principal organe cible est le système nerveux central, en particulier au cours du développement chez le foetus et le jeune enfant. Chez l’adulte, le plomb a des effets sur les reins et sur le système cardiovasculaire.")
+            elif contrib_option_substances_ino_mb == 'Cadmium':
+                st.caption("Le cadmium (Cd) est un métal lourd qui se retrouve dans les différents compartiments de l’environnement (sols, eau, air) du fait de sa présence à l’état naturel dans la croûte terrestre et des activités industrielles et agricoles.  La source principale d’exposition au cadmium varie selon le type de population : l’alimentation pour la population générale, la fumée de cigarette et l’air ambiant pour les travailleurs exposés en milieu industriel.Chez l’homme, une exposition prolongée au cadmium par voie orale induit une atteinte rénale. Une fragilité osseuse, des troubles de la reproduction ont également été répertoriés, ainsi qu’un risque accru de cancer ayant donné lieu à un classement comme « cancérogène pour l’homme » (groupe 1) par le Centre International de Recherche sur le Cancer (CIRC) en 1993.")
+            elif contrib_option_substances_ino_mb == 'Aluminium':
+                st.caption("L’aluminium (Al) est l’élément métallique le plus abondant de la croûte terrestre. Du fait de ses propriétés physico-chimiques (basse densité, malléabilité, résistance à la corrosion, etc.), il est utilisé dans de nombreux domaines industriels (agro-alimentaire, pharmaceutique, bâtiment, etc.) et pour le traitement des eaux d’alimentation. Il est présent dans les aliments et l’eau sous différentes formes chimiques qui déterminent sa toxicité. Les effets toxiques de l’aluminium portent essentiellement sur le système nerveux central (encéphalopathies, troubles psychomoteurs) et sur le tissu osseux. Chez l’homme, ces effets sont observés chez des sujets exposés par d’autres voies que l’alimentation, conduisant à l’accumulation de fortes quantités d’aluminium : patients insuffisants rénaux dialysés, alimentation parentérale, personnes professionnellement exposées. ")
+            elif contrib_option_substances_ino_mb == 'Antimoine':
+                st.caption("L’antimoine (Sb) est un métalloïde très peu abondant dans la croûte terrestre. Il est utilisé dans les alliages métalliques pour en accroître la dureté, dans la fabrication de semi-conducteurs, dans les plastiques et les feux d’artifices. Le trioxyde d’antimoine est employé comme ignifugeant pour les textiles et les matières plastiques, comme opacifiant pour les verres, les céramiques et les émaux, comme pigment pour les peintures et comme catalyseur chimique. Le trioxyde d’antimoine a été classé considéré comme « peut-être cancérogène pour l’homme » (groupe 2B) par le Centre International de Recherche sur le Cancer (CIRC) en 1989. Les sels solubles d’antimoine provoquent, après ingestion, des effets irritants au niveau gastro-intestinal se traduisant par des vomissements, des crampes abdominales et des diarrhées. Une toxicité cardiaque ou oculaire est aussi rapportée à fortes doses. ")
+            elif contrib_option_substances_ino_mb == 'Baryum':
+                st.caption("Le baryum (Ba) est un métal présent dans de nombreux minerais. Son utilisation concerne de nombreux domaines (pesticides, textiles, pigments, traitement d’eaux, médical, etc.).Les sels solubles de baryum sont bien absorbés et se déposent essentiellement au niveau du tissu osseux. Il n’a pas été démontré d’effet cancérogène ni mutagène (altération de la structure de l'ADN). Les travailleurs exposés régulièrement par inhalation au baryum peuvent présenter des manifestations pulmonaires bénignes sans troubles fonctionnels associés. ")
+            elif contrib_option_substances_ino_mb == 'Gallium':
+                st.caption("Le gallium (Ga) est un métal provenant essentiellement de l’extraction de l’aluminium et du zinc. Essentiellement sous forme de sels, il est utilisé en petite quantité pour la fabrication de semi-conducteurs, dans l’industrie électrique et électronique ; c’est un substitut du mercure pour les lampes à arc et les thermomètres pour hautes températures. Plusieurs utilisations médicales sont décrites : traceur radioactif, alliage dentaires, traitement des hypercalcémies tumorales. Dans le contexte de l’exposition professionnelle, le gallium et ses composés pénètrent par voie respiratoire, et très peu par voie digestive. La rétention de gallium au niveau pulmonaire est certaine chez l’animal. L’absorption à partir du tube digestif semble faible. Il est transporté par le sang, et se distribue dans le foie, la rate, les tissus osseux et la moelle osseuse. La toxicité est basée essentiellement sur des études animales et varie selon les espèces et les composés du gallium. Les organes cibles sont le poumon, le système hématopoïétique (ormation des globules sanguins), le système immunitaire, le rein et l’appareil reproducteur male.  L’arséniure de gallium est classé par le Centre International de Recherche sur le Cancer parmi les « cancérogènes pour l’homme » (groupe 1) en s’appuyant surtout sur des données expérimentales animales et sans en avoir démontré le mécanisme d’action.")
+            elif contrib_option_substances_ino_mb == 'Germanium':
+                st.caption("Le germanium (Ge) est un métalloïde présent naturellement dans la croûte terrestre. Il peut exister sous forme organique ou inorganique. Généralement obtenu à partir du raffinage du cuivre, du zinc et du plomb, il est utilisé principalement dans le secteur de l’électronique (diodes, transistors, etc.) et du verre (élément optique) du fait de ses propriétés proches de celles du silicium. Dans certains pays, il est également commercialisé sous forme organique en tant que complément alimentaire. L’absorption du germanium au niveau intestinal est rapide et complète. Son élimination est principalement urinaire. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérigène sous ses formes ioniques ou dioxyde de germanium. Plusieurs cas rapportés de patients exposés de manière répétée à de fortes doses de germanium (complément alimentaire) indiquent notamment des perturbations au niveau rénal.")
+            elif contrib_option_substances_ino_mb == 'Tellure':
+                st.caption("Le tellure (Te) est un metalloïde issu principalement des résidus d’affinage du cuivre. Il est utilisé principalement en métallurgie (alliage), dans l’industrie chimique (caoutchouc, plastique) et dans l’électronique. Le tellure est absorbé par ingestion et éliminé en partie dans les urines. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérogène. Des effets tératogènes (susceptible de provoquer des malformations congénitales chez les enfants exposés in utero) ont été observés chez des rats exposés oralement à des doses élevées de tellure dans la nourriture. En milieu professionnel, l’exposition par inhalation au tellure peut engendrer des symptômes sans gravité particulière, caractérisés essentiellement par une haleine alliacée.")
+            elif contrib_option_substances_ino_mb == 'Vanadium':
+                st.caption("Le vanadium (V) est un métal que l’on retrouve à l’état naturel. Il est principalement utilisé en métallurgie pour augmenter la résistance des aciers, et dans d’autres industries pour ses propriétés catalytiques, colorantes ou anticorrosives. Le rôle fonctionnel du vanadium n’a pas été clairement caractérisé chez l’animal ou chez l’homme. Selon la dose, le vanadium pourrait avoir des effets sur les métabolismes lipidique et glucidique et dans la fonction thyroïdienne. Le vanadium est peu absorbé par voie orale (<1%). Chez l’animal, les études expérimentales indiquent que les effets les plus sensibles observés suite à l’ingestion de sels de vanadium sont des perturbations au niveau sanguin (pression artérielle et taux de globules rouges), des systèmes nerveux et rénal et du développement. Des études expérimentales sur un composé de vanadium (le pentoxyde de vanadium) révèlent d’autres effets toxiques (atteinte de la rate, des reins, des poumons et cancers) mais la présence de cette forme dans les aliments n’a jamais été démontrée. ")
+            elif contrib_option_substances_ino_mb == 'Nickel':
+                st.caption("Le nickel (Ni) est un métal naturellement présent dans la croûte terrestre dont les propriétés de malléabilité, de magnétisme, de conduction de la chaleur et de l’électricité conduisent à le retrouver dans de très nombreuses applications industrielles principalement sous forme d’alliages (aciers inoxydables) et de catalyseurs pour les constructions automobile, navale et aéronautique, et les industries électriques. Le nickel se retrouve sous une grande variété de formes chimiques inorganiques (métal, oxydes, sels) ou organiques. L’homme y est exposé par inhalation (exposition professionnelle), par la consommation d’eau et d’aliments et par contact cutané. Dans ce dernier cas, il est allergisant et peut provoquer une dermatite de contact. Les effets cancérogènes des composés du nickel observés après une exposition par inhalation ont conduit à une classification par le Centre International de Recherche sur le Cancer (CIRC) parmi les « cancérogènes pour l’homme » (groupe 1). Toutefois, aucune étude par voie orale n’a montré d’effet cancérogène. Aucun composé du nickel n’est actuellement classé comme mutagène (altération dela structure de l'ADN).")
+            elif contrib_option_substances_ino_mb == 'Cobalt':
+                st.caption("Le cobalt (Co) est un métal naturellement présent dans la croûte terrestre. Le cobalt et ses composés minéraux ont de nombreuses applications dans l’industrie chimique et pétrolière comme catalyseur, pour la fabrication d’alliages, comme pigment pour le verre et les céramiques, comme agent séchant des peintures, etc. Il est également utilisé en tant qu’additif dans les aliments pour animaux pour les espèces capables de synthétiser la vitamine B12. On trouve le cobalt dans les produits animaux (sous forme de cobalamine) et dans les végétaux (sous forme inorganique). Chez l'homme, le cobalt absorbé est majoritairement retrouvé dans le foie et les reins. Chez l’animal, les effets toxiques rapportés avec des sels de cobalt comprennent une polycythémie (augmentation de la masse érythrocytaire totale), des modifications cardiaques, des altérations fonctionnelles et morphologiques de la thyroïde, une dégénérescence et une atrophie testiculaires, une réduction de la croissance et de la survie de la descendance. Chez l’homme, des cardiomyopathies ont été rapportées dans les années 60 chez des forts buveurs de bière, auxquelles avait été ajouté du cobalt en tant qu’agent stabilisateur de mousse. Les composés du cobalt (II) ont été classés par le Centre International de Recherche surle Cancer (CIRC) comme « peut-être cancérogènes pour l’homme » (groupe 2B). Des études ont montré que les sels de cobalt sont capables d’induire des altérations génotoxiques tels que des dommages à l’ADN, des mutations géniques, la formation de micronoyaux, des aberrations chromosomiques chez l’animal par voie orale ou parentérale.")
+            elif contrib_option_substances_ino_mb == 'Chrome':
+                st.caption("Le chrome (Cr), un métal abondant dans la croûte terrestre, est utilisé dans des alliages métalliques tels que l’acier inoxydable, en pigments, pour le tannage des peaux, etc. L’homme y est exposé par inhalation et par la consommation d’eau et d’aliments. Chez l’homme, la déficience en chrome a été observée chez des patients recevant une nutrition parentérale totale sur le long terme. Les symptômes sont une altération de l’utilisation et de la tolérance au glucose, une altération du métabolisme lipidique, une altération du métabolisme de l’azote, une perte de poids. En cas de carences profondes, des effets neurologiques peuvent être observés. Chez l’enfant, aucune carence en chrome n’a été décrite en dehors d’une malnutrition protéino-énergétique sévère. Le chrome présente une toxicité nettement différente en fonction de sa valence. Différents composés du chrome sont génotoxiques et sont classés par le Centre International de Recherche sur le Cancer comme « cancérogènes pour l’homme » (groupe 1), du fait d’un excès de risque de cancer du poumon chez les professionnels exposés par inhalation. Par voie orale, certaines données suggèrent une augmentation de l’incidence de cancer de l’estomac chez l’Homme exposé par l’eau de boisson. ")
+
+
+        with tab3:
+            col1, col2, col3= st.columns(3)
+
+            with col3:
+              #SelectBox
+              df_contrib_ino_ub = df_contrib_ino.dropna(axis = 0, how = 'all', subset = ['Contribution_UB'])
               contrib_option_substances_ino_ub = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
-                                                  df_contrib_LB_UB['Substance'].unique(),
-                                                  key='substances_ub')
+                                                  df_contrib_ino_ub['Substance'].unique(),
+                                                  key='substances_ino_ub_contri')
 
               # Convertir la valeur unique en liste
               selected_substances = [contrib_option_substances_ino_ub]
               # Filtrer les données en fonction des options sélectionnées
-              df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin(selected_substances)]
+              df_filtered_contrib = df_contrib_ino_ub[df_contrib_ino_ub['Substance'].isin(selected_substances)]
 
 
               # Filtrer les données en fonction des options sélectionnées
-              df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_ub])]
+              df_filtered_contrib = df_contrib_ino_ub[df_contrib_ino_ub['Substance'].isin([contrib_option_substances_ino_ub])]
 
             # Vérifier si des substances et familles d'aliments ont été sélectionnées
             fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
@@ -1854,82 +2245,30 @@ if selected == "Aliments contributeurs":
             elif contrib_option_substances_ino_ub == 'Chrome':
                 st.caption("Le chrome (Cr), un métal abondant dans la croûte terrestre, est utilisé dans des alliages métalliques tels que l’acier inoxydable, en pigments, pour le tannage des peaux, etc. L’homme y est exposé par inhalation et par la consommation d’eau et d’aliments. Chez l’homme, la déficience en chrome a été observée chez des patients recevant une nutrition parentérale totale sur le long terme. Les symptômes sont une altération de l’utilisation et de la tolérance au glucose, une altération du métabolisme lipidique, une altération du métabolisme de l’azote, une perte de poids. En cas de carences profondes, des effets neurologiques peuvent être observés. Chez l’enfant, aucune carence en chrome n’a été décrite en dehors d’une malnutrition protéino-énergétique sévère. Le chrome présente une toxicité nettement différente en fonction de sa valence. Différents composés du chrome sont génotoxiques et sont classés par le Centre International de Recherche sur le Cancer comme « cancérogènes pour l’homme » (groupe 1), du fait d’un excès de risque de cancer du poumon chez les professionnels exposés par inhalation. Par voie orale, certaines données suggèrent une augmentation de l’incidence de cancer de l’estomac chez l’Homme exposé par l’eau de boisson. ")
 
+    
+    if substances == "Additifs":
+        df_contrib_addi  = (df_contrib[(df_contrib['Famille'] == 'Additifs')])
 
-            
+        tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
 
-
-        with tab2:
-
+        with tab1:
             col1, col2, col3= st.columns(3)
 
             with col3:
-           
-                #SelectBox
-                contrib_option_substances_ino_mb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
-                                                            df_contrib_MB['Substance'].unique())
-                # Convertir la valeur unique en liste
-                selected_substances = [contrib_option_substances_ino_mb]
-                # Filtrer les données en fonction des options sélectionnées
-                df_filtered_contrib = df_contrib_MB[df_contrib_MB['Substance'].isin(selected_substances)]
+              #SelectBox
+              df_contrib_addi_lb = df_contrib_addi.dropna(axis = 0, how = 'all', subset = ['Contribution_LB'])
+              contrib_option_substances_addi_lb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_addi_lb['Substance'].unique(),
+                                                  key='substances_addi_lb_contri')
 
-                # Filtrer les données en fonction des options sélectionnées
-                df_filtered_contrib = df_contrib_MB[df_contrib_MB['Substance'].isin([contrib_option_substances_ino_mb])]
-
-            # Vérifier si des substances et familles d'aliments ont été sélectionnées
-            fig = px.bar(df_filtered_contrib, x='Contribution_MB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
-            fig.update_xaxes(title="% de la contribution à l’exposition totale")
-            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
-            fig.update_layout(
-                    yaxis={'categoryorder': 'total ascending'},
-                )
-            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
-            
-            # Texte dynamique en fonction du choix de l'utilisateur
-            if contrib_option_substances_ino_mb == 'Arsenic inorganique':
-                st.caption("L’arsenic (As) est un élément présent dans la croûte terrestre. Il provient également des activités industrielles, de la combustion de produits fossiles, d'anciennes utilisations agricoles, etc. Il existe sous différentes formes chimiques, organiques ou inorganiques. Par ingestion, l’arsenic peut entraîner des lésions cutanées, des cancers, une toxicité sur le développement, une neurotoxicité, des maladies cardiovasculaires, une perturbation du métabolisme du glucose et du diabète.")
-            elif contrib_option_substances_ino_mb == 'Plomb':
-                st.caption("Le plomb (Pb) est un métal naturellement présent dans la croûte terrestre. Son utilisation intensive par l’homme (activités minières et industrielles : fonderies, accumulateurs, pigments, alliages, munitions, etc.) est à l’origine d’une forte dispersion dans l’environnement. L’homme y est exposé principalement par les aliments et l’eau qu’il consomme, mais aussi via l’air, le sol et les poussières. Du fait de son interdiction depuis la fin des années 90 dans l’essence automobile, les peintures utilisées à l’intérieur des habitations et les canalisations d’eau, le niveau d’exposition a fortement diminué ces dix dernières années. Chez l’homme, le principal organe cible est le système nerveux central, en particulier au cours du développement chez le foetus et le jeune enfant. Chez l’adulte, le plomb a des effets sur les reins et sur le système cardiovasculaire.")
-            elif contrib_option_substances_ino_mb == 'Cadmium':
-                st.caption("Le cadmium (Cd) est un métal lourd qui se retrouve dans les différents compartiments de l’environnement (sols, eau, air) du fait de sa présence à l’état naturel dans la croûte terrestre et des activités industrielles et agricoles.  La source principale d’exposition au cadmium varie selon le type de population : l’alimentation pour la population générale, la fumée de cigarette et l’air ambiant pour les travailleurs exposés en milieu industriel.Chez l’homme, une exposition prolongée au cadmium par voie orale induit une atteinte rénale. Une fragilité osseuse, des troubles de la reproduction ont également été répertoriés, ainsi qu’un risque accru de cancer ayant donné lieu à un classement comme « cancérogène pour l’homme » (groupe 1) par le Centre International de Recherche sur le Cancer (CIRC) en 1993.")
-            elif contrib_option_substances_ino_mb == 'Aluminium':
-                st.caption("L’aluminium (Al) est l’élément métallique le plus abondant de la croûte terrestre. Du fait de ses propriétés physico-chimiques (basse densité, malléabilité, résistance à la corrosion, etc.), il est utilisé dans de nombreux domaines industriels (agro-alimentaire, pharmaceutique, bâtiment, etc.) et pour le traitement des eaux d’alimentation. Il est présent dans les aliments et l’eau sous différentes formes chimiques qui déterminent sa toxicité. Les effets toxiques de l’aluminium portent essentiellement sur le système nerveux central (encéphalopathies, troubles psychomoteurs) et sur le tissu osseux. Chez l’homme, ces effets sont observés chez des sujets exposés par d’autres voies que l’alimentation, conduisant à l’accumulation de fortes quantités d’aluminium : patients insuffisants rénaux dialysés, alimentation parentérale, personnes professionnellement exposées. ")
-            elif contrib_option_substances_ino_mb == 'Antimoine':
-                st.caption("L’antimoine (Sb) est un métalloïde très peu abondant dans la croûte terrestre. Il est utilisé dans les alliages métalliques pour en accroître la dureté, dans la fabrication de semi-conducteurs, dans les plastiques et les feux d’artifices. Le trioxyde d’antimoine est employé comme ignifugeant pour les textiles et les matières plastiques, comme opacifiant pour les verres, les céramiques et les émaux, comme pigment pour les peintures et comme catalyseur chimique. Le trioxyde d’antimoine a été classé considéré comme « peut-être cancérogène pour l’homme » (groupe 2B) par le Centre International de Recherche sur le Cancer (CIRC) en 1989. Les sels solubles d’antimoine provoquent, après ingestion, des effets irritants au niveau gastro-intestinal se traduisant par des vomissements, des crampes abdominales et des diarrhées. Une toxicité cardiaque ou oculaire est aussi rapportée à fortes doses. ")
-            elif contrib_option_substances_ino_mb == 'Baryum':
-                st.caption("Le baryum (Ba) est un métal présent dans de nombreux minerais. Son utilisation concerne de nombreux domaines (pesticides, textiles, pigments, traitement d’eaux, médical, etc.).Les sels solubles de baryum sont bien absorbés et se déposent essentiellement au niveau du tissu osseux. Il n’a pas été démontré d’effet cancérogène ni mutagène (altération de la structure de l'ADN). Les travailleurs exposés régulièrement par inhalation au baryum peuvent présenter des manifestations pulmonaires bénignes sans troubles fonctionnels associés. ")
-            elif contrib_option_substances_ino_mb == 'Gallium':
-                st.caption("Le gallium (Ga) est un métal provenant essentiellement de l’extraction de l’aluminium et du zinc. Essentiellement sous forme de sels, il est utilisé en petite quantité pour la fabrication de semi-conducteurs, dans l’industrie électrique et électronique ; c’est un substitut du mercure pour les lampes à arc et les thermomètres pour hautes températures. Plusieurs utilisations médicales sont décrites : traceur radioactif, alliage dentaires, traitement des hypercalcémies tumorales. Dans le contexte de l’exposition professionnelle, le gallium et ses composés pénètrent par voie respiratoire, et très peu par voie digestive. La rétention de gallium au niveau pulmonaire est certaine chez l’animal. L’absorption à partir du tube digestif semble faible. Il est transporté par le sang, et se distribue dans le foie, la rate, les tissus osseux et la moelle osseuse. La toxicité est basée essentiellement sur des études animales et varie selon les espèces et les composés du gallium. Les organes cibles sont le poumon, le système hématopoïétique (ormation des globules sanguins), le système immunitaire, le rein et l’appareil reproducteur male.  L’arséniure de gallium est classé par le Centre International de Recherche sur le Cancer parmi les « cancérogènes pour l’homme » (groupe 1) en s’appuyant surtout sur des données expérimentales animales et sans en avoir démontré le mécanisme d’action.")
-            elif contrib_option_substances_ino_mb == 'Germanium':
-                st.caption("Le germanium (Ge) est un métalloïde présent naturellement dans la croûte terrestre. Il peut exister sous forme organique ou inorganique. Généralement obtenu à partir du raffinage du cuivre, du zinc et du plomb, il est utilisé principalement dans le secteur de l’électronique (diodes, transistors, etc.) et du verre (élément optique) du fait de ses propriétés proches de celles du silicium. Dans certains pays, il est également commercialisé sous forme organique en tant que complément alimentaire. L’absorption du germanium au niveau intestinal est rapide et complète. Son élimination est principalement urinaire. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérigène sous ses formes ioniques ou dioxyde de germanium. Plusieurs cas rapportés de patients exposés de manière répétée à de fortes doses de germanium (complément alimentaire) indiquent notamment des perturbations au niveau rénal.")
-            elif contrib_option_substances_ino_mb == 'Tellure':
-                st.caption("Le tellure (Te) est un metalloïde issu principalement des résidus d’affinage du cuivre. Il est utilisé principalement en métallurgie (alliage), dans l’industrie chimique (caoutchouc, plastique) et dans l’électronique. Le tellure est absorbé par ingestion et éliminé en partie dans les urines. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérogène. Des effets tératogènes (susceptible de provoquer des malformations congénitales chez les enfants exposés in utero) ont été observés chez des rats exposés oralement à des doses élevées de tellure dans la nourriture. En milieu professionnel, l’exposition par inhalation au tellure peut engendrer des symptômes sans gravité particulière, caractérisés essentiellement par une haleine alliacée.")
-            elif contrib_option_substances_ino_mb == 'Vanadium':
-                st.caption("Le vanadium (V) est un métal que l’on retrouve à l’état naturel. Il est principalement utilisé en métallurgie pour augmenter la résistance des aciers, et dans d’autres industries pour ses propriétés catalytiques, colorantes ou anticorrosives. Le rôle fonctionnel du vanadium n’a pas été clairement caractérisé chez l’animal ou chez l’homme. Selon la dose, le vanadium pourrait avoir des effets sur les métabolismes lipidique et glucidique et dans la fonction thyroïdienne. Le vanadium est peu absorbé par voie orale (<1%). Chez l’animal, les études expérimentales indiquent que les effets les plus sensibles observés suite à l’ingestion de sels de vanadium sont des perturbations au niveau sanguin (pression artérielle et taux de globules rouges), des systèmes nerveux et rénal et du développement. Des études expérimentales sur un composé de vanadium (le pentoxyde de vanadium) révèlent d’autres effets toxiques (atteinte de la rate, des reins, des poumons et cancers) mais la présence de cette forme dans les aliments n’a jamais été démontrée. ")
-            elif contrib_option_substances_ino_mb == 'Nickel':
-                st.caption("Le nickel (Ni) est un métal naturellement présent dans la croûte terrestre dont les propriétés de malléabilité, de magnétisme, de conduction de la chaleur et de l’électricité conduisent à le retrouver dans de très nombreuses applications industrielles principalement sous forme d’alliages (aciers inoxydables) et de catalyseurs pour les constructions automobile, navale et aéronautique, et les industries électriques. Le nickel se retrouve sous une grande variété de formes chimiques inorganiques (métal, oxydes, sels) ou organiques. L’homme y est exposé par inhalation (exposition professionnelle), par la consommation d’eau et d’aliments et par contact cutané. Dans ce dernier cas, il est allergisant et peut provoquer une dermatite de contact. Les effets cancérogènes des composés du nickel observés après une exposition par inhalation ont conduit à une classification par le Centre International de Recherche sur le Cancer (CIRC) parmi les « cancérogènes pour l’homme » (groupe 1). Toutefois, aucune étude par voie orale n’a montré d’effet cancérogène. Aucun composé du nickel n’est actuellement classé comme mutagène (altération dela structure de l'ADN).")
-            elif contrib_option_substances_ino_mb == 'Cobalt':
-                st.caption("Le cobalt (Co) est un métal naturellement présent dans la croûte terrestre. Le cobalt et ses composés minéraux ont de nombreuses applications dans l’industrie chimique et pétrolière comme catalyseur, pour la fabrication d’alliages, comme pigment pour le verre et les céramiques, comme agent séchant des peintures, etc. Il est également utilisé en tant qu’additif dans les aliments pour animaux pour les espèces capables de synthétiser la vitamine B12. On trouve le cobalt dans les produits animaux (sous forme de cobalamine) et dans les végétaux (sous forme inorganique). Chez l'homme, le cobalt absorbé est majoritairement retrouvé dans le foie et les reins. Chez l’animal, les effets toxiques rapportés avec des sels de cobalt comprennent une polycythémie (augmentation de la masse érythrocytaire totale), des modifications cardiaques, des altérations fonctionnelles et morphologiques de la thyroïde, une dégénérescence et une atrophie testiculaires, une réduction de la croissance et de la survie de la descendance. Chez l’homme, des cardiomyopathies ont été rapportées dans les années 60 chez des forts buveurs de bière, auxquelles avait été ajouté du cobalt en tant qu’agent stabilisateur de mousse. Les composés du cobalt (II) ont été classés par le Centre International de Recherche surle Cancer (CIRC) comme « peut-être cancérogènes pour l’homme » (groupe 2B). Des études ont montré que les sels de cobalt sont capables d’induire des altérations génotoxiques tels que des dommages à l’ADN, des mutations géniques, la formation de micronoyaux, des aberrations chromosomiques chez l’animal par voie orale ou parentérale.")
-            elif contrib_option_substances_ino_mb == 'Chrome':
-                st.caption("Le chrome (Cr), un métal abondant dans la croûte terrestre, est utilisé dans des alliages métalliques tels que l’acier inoxydable, en pigments, pour le tannage des peaux, etc. L’homme y est exposé par inhalation et par la consommation d’eau et d’aliments. Chez l’homme, la déficience en chrome a été observée chez des patients recevant une nutrition parentérale totale sur le long terme. Les symptômes sont une altération de l’utilisation et de la tolérance au glucose, une altération du métabolisme lipidique, une altération du métabolisme de l’azote, une perte de poids. En cas de carences profondes, des effets neurologiques peuvent être observés. Chez l’enfant, aucune carence en chrome n’a été décrite en dehors d’une malnutrition protéino-énergétique sévère. Le chrome présente une toxicité nettement différente en fonction de sa valence. Différents composés du chrome sont génotoxiques et sont classés par le Centre International de Recherche sur le Cancer comme « cancérogènes pour l’homme » (groupe 1), du fait d’un excès de risque de cancer du poumon chez les professionnels exposés par inhalation. Par voie orale, certaines données suggèrent une augmentation de l’incidence de cancer de l’estomac chez l’Homme exposé par l’eau de boisson. ")
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_addi_lb]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_addi_lb[df_contrib_addi_lb['Substance'].isin(selected_substances)]
 
 
-
-        with tab3:
-            
-            col1, col2, col3= st.columns(3)
-
-            with col3:
-            
-                #SelectBox
-                contrib_option_substances_ino_lb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
-                                                            df_contrib_LB_UB['Substance'].unique())
-                # Convertir la valeur unique en liste
-                selected_substances = [contrib_option_substances_ino_lb]
-                # Filtrer les données en fonction des options sélectionnées
-                df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin(selected_substances)]
-
-                # Filtrer les données en fonction des options sélectionnées
-                df_filtered_contrib = df_contrib_LB_UB[df_contrib_LB_UB['Substance'].isin([contrib_option_substances_ino_lb])]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_addi_lb[df_contrib_addi_lb['Substance'].isin([contrib_option_substances_addi_lb])]
 
             # Vérifier si des substances et familles d'aliments ont été sélectionnées
             fig = px.bar(df_filtered_contrib, x='Contribution_LB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
@@ -1940,48 +2279,38 @@ if selected == "Aliments contributeurs":
                 )
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
-            # Texte dynamique en fonction du choix de l'utilisateur
-            if contrib_option_substances_ino_lb == 'Arsenic inorganique':
-                st.caption("L’arsenic (As) est un élément présent dans la croûte terrestre. Il provient également des activités industrielles, de la combustion de produits fossiles, d'anciennes utilisations agricoles, etc. Il existe sous différentes formes chimiques, organiques ou inorganiques. Par ingestion, l’arsenic peut entraîner des lésions cutanées, des cancers, une toxicité sur le développement, une neurotoxicité, des maladies cardiovasculaires, une perturbation du métabolisme du glucose et du diabète.")
-            elif contrib_option_substances_ino_lb == 'Plomb':
-                st.caption("Le plomb (Pb) est un métal naturellement présent dans la croûte terrestre. Son utilisation intensive par l’homme (activités minières et industrielles : fonderies, accumulateurs, pigments, alliages, munitions, etc.) est à l’origine d’une forte dispersion dans l’environnement. L’homme y est exposé principalement par les aliments et l’eau qu’il consomme, mais aussi via l’air, le sol et les poussières. Du fait de son interdiction depuis la fin des années 90 dans l’essence automobile, les peintures utilisées à l’intérieur des habitations et les canalisations d’eau, le niveau d’exposition a fortement diminué ces dix dernières années. Chez l’homme, le principal organe cible est le système nerveux central, en particulier au cours du développement chez le foetus et le jeune enfant. Chez l’adulte, le plomb a des effets sur les reins et sur le système cardiovasculaire.")
-            elif contrib_option_substances_ino_lb == 'Cadmium':
-                st.caption("Le cadmium (Cd) est un métal lourd qui se retrouve dans les différents compartiments de l’environnement (sols, eau, air) du fait de sa présence à l’état naturel dans la croûte terrestre et des activités industrielles et agricoles.  La source principale d’exposition au cadmium varie selon le type de population : l’alimentation pour la population générale, la fumée de cigarette et l’air ambiant pour les travailleurs exposés en milieu industriel.Chez l’homme, une exposition prolongée au cadmium par voie orale induit une atteinte rénale. Une fragilité osseuse, des troubles de la reproduction ont également été répertoriés, ainsi qu’un risque accru de cancer ayant donné lieu à un classement comme « cancérogène pour l’homme » (groupe 1) par le Centre International de Recherche sur le Cancer (CIRC) en 1993.")
-            elif contrib_option_substances_ino_lb == 'Aluminium':
-                st.caption("L’aluminium (Al) est l’élément métallique le plus abondant de la croûte terrestre. Du fait de ses propriétés physico-chimiques (basse densité, malléabilité, résistance à la corrosion, etc.), il est utilisé dans de nombreux domaines industriels (agro-alimentaire, pharmaceutique, bâtiment, etc.) et pour le traitement des eaux d’alimentation. Il est présent dans les aliments et l’eau sous différentes formes chimiques qui déterminent sa toxicité. Les effets toxiques de l’aluminium portent essentiellement sur le système nerveux central (encéphalopathies, troubles psychomoteurs) et sur le tissu osseux. Chez l’homme, ces effets sont observés chez des sujets exposés par d’autres voies que l’alimentation, conduisant à l’accumulation de fortes quantités d’aluminium : patients insuffisants rénaux dialysés, alimentation parentérale, personnes professionnellement exposées. ")
-            elif contrib_option_substances_ino_lb == 'Antimoine':
-                st.caption("L’antimoine (Sb) est un métalloïde très peu abondant dans la croûte terrestre. Il est utilisé dans les alliages métalliques pour en accroître la dureté, dans la fabrication de semi-conducteurs, dans les plastiques et les feux d’artifices. Le trioxyde d’antimoine est employé comme ignifugeant pour les textiles et les matières plastiques, comme opacifiant pour les verres, les céramiques et les émaux, comme pigment pour les peintures et comme catalyseur chimique. Le trioxyde d’antimoine a été classé considéré comme « peut-être cancérogène pour l’homme » (groupe 2B) par le Centre International de Recherche sur le Cancer (CIRC) en 1989. Les sels solubles d’antimoine provoquent, après ingestion, des effets irritants au niveau gastro-intestinal se traduisant par des vomissements, des crampes abdominales et des diarrhées. Une toxicité cardiaque ou oculaire est aussi rapportée à fortes doses. ")
-            elif contrib_option_substances_ino_lb == 'Baryum':
-                st.caption("Le baryum (Ba) est un métal présent dans de nombreux minerais. Son utilisation concerne de nombreux domaines (pesticides, textiles, pigments, traitement d’eaux, médical, etc.).Les sels solubles de baryum sont bien absorbés et se déposent essentiellement au niveau du tissu osseux. Il n’a pas été démontré d’effet cancérogène ni mutagène (altération de la structure de l'ADN). Les travailleurs exposés régulièrement par inhalation au baryum peuvent présenter des manifestations pulmonaires bénignes sans troubles fonctionnels associés. ")
-            elif contrib_option_substances_ino_lb == 'Gallium':
-                st.caption("Le gallium (Ga) est un métal provenant essentiellement de l’extraction de l’aluminium et du zinc. Essentiellement sous forme de sels, il est utilisé en petite quantité pour la fabrication de semi-conducteurs, dans l’industrie électrique et électronique ; c’est un substitut du mercure pour les lampes à arc et les thermomètres pour hautes températures. Plusieurs utilisations médicales sont décrites : traceur radioactif, alliage dentaires, traitement des hypercalcémies tumorales. Dans le contexte de l’exposition professionnelle, le gallium et ses composés pénètrent par voie respiratoire, et très peu par voie digestive. La rétention de gallium au niveau pulmonaire est certaine chez l’animal. L’absorption à partir du tube digestif semble faible. Il est transporté par le sang, et se distribue dans le foie, la rate, les tissus osseux et la moelle osseuse. La toxicité est basée essentiellement sur des études animales et varie selon les espèces et les composés du gallium. Les organes cibles sont le poumon, le système hématopoïétique (ormation des globules sanguins), le système immunitaire, le rein et l’appareil reproducteur male.  L’arséniure de gallium est classé par le Centre International de Recherche sur le Cancer parmi les « cancérogènes pour l’homme » (groupe 1) en s’appuyant surtout sur des données expérimentales animales et sans en avoir démontré le mécanisme d’action.")
-            elif contrib_option_substances_ino_lb == 'Germanium':
-                st.caption("Le germanium (Ge) est un métalloïde présent naturellement dans la croûte terrestre. Il peut exister sous forme organique ou inorganique. Généralement obtenu à partir du raffinage du cuivre, du zinc et du plomb, il est utilisé principalement dans le secteur de l’électronique (diodes, transistors, etc.) et du verre (élément optique) du fait de ses propriétés proches de celles du silicium. Dans certains pays, il est également commercialisé sous forme organique en tant que complément alimentaire. L’absorption du germanium au niveau intestinal est rapide et complète. Son élimination est principalement urinaire. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérigène sous ses formes ioniques ou dioxyde de germanium. Plusieurs cas rapportés de patients exposés de manière répétée à de fortes doses de germanium (complément alimentaire) indiquent notamment des perturbations au niveau rénal.")
-            elif contrib_option_substances_ino_lb == 'Tellure':
-                st.caption("Le tellure (Te) est un metalloïde issu principalement des résidus d’affinage du cuivre. Il est utilisé principalement en métallurgie (alliage), dans l’industrie chimique (caoutchouc, plastique) et dans l’électronique. Le tellure est absorbé par ingestion et éliminé en partie dans les urines. Il n’est ni mutagène (altération de la structure de l'ADN), ni cancérogène. Des effets tératogènes (susceptible de provoquer des malformations congénitales chez les enfants exposés in utero) ont été observés chez des rats exposés oralement à des doses élevées de tellure dans la nourriture. En milieu professionnel, l’exposition par inhalation au tellure peut engendrer des symptômes sans gravité particulière, caractérisés essentiellement par une haleine alliacée.")
-            elif contrib_option_substances_ino_lb == 'Vanadium':
-                st.caption("Le vanadium (V) est un métal que l’on retrouve à l’état naturel. Il est principalement utilisé en métallurgie pour augmenter la résistance des aciers, et dans d’autres industries pour ses propriétés catalytiques, colorantes ou anticorrosives. Le rôle fonctionnel du vanadium n’a pas été clairement caractérisé chez l’animal ou chez l’homme. Selon la dose, le vanadium pourrait avoir des effets sur les métabolismes lipidique et glucidique et dans la fonction thyroïdienne. Le vanadium est peu absorbé par voie orale (<1%). Chez l’animal, les études expérimentales indiquent que les effets les plus sensibles observés suite à l’ingestion de sels de vanadium sont des perturbations au niveau sanguin (pression artérielle et taux de globules rouges), des systèmes nerveux et rénal et du développement. Des études expérimentales sur un composé de vanadium (le pentoxyde de vanadium) révèlent d’autres effets toxiques (atteinte de la rate, des reins, des poumons et cancers) mais la présence de cette forme dans les aliments n’a jamais été démontrée. ")
-            elif contrib_option_substances_ino_lb == 'Nickel':
-                st.caption("Le nickel (Ni) est un métal naturellement présent dans la croûte terrestre dont les propriétés de malléabilité, de magnétisme, de conduction de la chaleur et de l’électricité conduisent à le retrouver dans de très nombreuses applications industrielles principalement sous forme d’alliages (aciers inoxydables) et de catalyseurs pour les constructions automobile, navale et aéronautique, et les industries électriques. Le nickel se retrouve sous une grande variété de formes chimiques inorganiques (métal, oxydes, sels) ou organiques. L’homme y est exposé par inhalation (exposition professionnelle), par la consommation d’eau et d’aliments et par contact cutané. Dans ce dernier cas, il est allergisant et peut provoquer une dermatite de contact. Les effets cancérogènes des composés du nickel observés après une exposition par inhalation ont conduit à une classification par le Centre International de Recherche sur le Cancer (CIRC) parmi les « cancérogènes pour l’homme » (groupe 1). Toutefois, aucune étude par voie orale n’a montré d’effet cancérogène. Aucun composé du nickel n’est actuellement classé comme mutagène (altération dela structure de l'ADN).")
-            elif contrib_option_substances_ino_lb == 'Cobalt':
-                st.caption("Le cobalt (Co) est un métal naturellement présent dans la croûte terrestre. Le cobalt et ses composés minéraux ont de nombreuses applications dans l’industrie chimique et pétrolière comme catalyseur, pour la fabrication d’alliages, comme pigment pour le verre et les céramiques, comme agent séchant des peintures, etc. Il est également utilisé en tant qu’additif dans les aliments pour animaux pour les espèces capables de synthétiser la vitamine B12. On trouve le cobalt dans les produits animaux (sous forme de cobalamine) et dans les végétaux (sous forme inorganique). Chez l'homme, le cobalt absorbé est majoritairement retrouvé dans le foie et les reins. Chez l’animal, les effets toxiques rapportés avec des sels de cobalt comprennent une polycythémie (augmentation de la masse érythrocytaire totale), des modifications cardiaques, des altérations fonctionnelles et morphologiques de la thyroïde, une dégénérescence et une atrophie testiculaires, une réduction de la croissance et de la survie de la descendance. Chez l’homme, des cardiomyopathies ont été rapportées dans les années 60 chez des forts buveurs de bière, auxquelles avait été ajouté du cobalt en tant qu’agent stabilisateur de mousse. Les composés du cobalt (II) ont été classés par le Centre International de Recherche surle Cancer (CIRC) comme « peut-être cancérogènes pour l’homme » (groupe 2B). Des études ont montré que les sels de cobalt sont capables d’induire des altérations génotoxiques tels que des dommages à l’ADN, des mutations géniques, la formation de micronoyaux, des aberrations chromosomiques chez l’animal par voie orale ou parentérale.")
-            elif contrib_option_substances_ino_lb == 'Chrome':
-                st.caption("Le chrome (Cr), un métal abondant dans la croûte terrestre, est utilisé dans des alliages métalliques tels que l’acier inoxydable, en pigments, pour le tannage des peaux, etc. L’homme y est exposé par inhalation et par la consommation d’eau et d’aliments. Chez l’homme, la déficience en chrome a été observée chez des patients recevant une nutrition parentérale totale sur le long terme. Les symptômes sont une altération de l’utilisation et de la tolérance au glucose, une altération du métabolisme lipidique, une altération du métabolisme de l’azote, une perte de poids. En cas de carences profondes, des effets neurologiques peuvent être observés. Chez l’enfant, aucune carence en chrome n’a été décrite en dehors d’une malnutrition protéino-énergétique sévère. Le chrome présente une toxicité nettement différente en fonction de sa valence. Différents composés du chrome sont génotoxiques et sont classés par le Centre International de Recherche sur le Cancer comme « cancérogènes pour l’homme » (groupe 1), du fait d’un excès de risque de cancer du poumon chez les professionnels exposés par inhalation. Par voie orale, certaines données suggèrent une augmentation de l’incidence de cancer de l’estomac chez l’Homme exposé par l’eau de boisson. ")
+        with tab2:
+            st.markdown("")
 
 
-    
-    if substances == "Phytoestrogènes":
-        st.markdown("")
-    
-    if substances == "Mycotoxines":
-        st.markdown("")
-    
-    if substances == "Additifs":
-        st.markdown("")
+        with tab3:
+            col1, col2, col3= st.columns(3)
 
-    if substances == "Pesticides":
-        st.markdown("")
-    
+            with col3:
+              #SelectBox
+              df_contrib_addi_ub = df_contrib_addi.dropna(axis = 0, how = 'all', subset = ['Contribution_UB'])
+              contrib_option_substances_addi_ub = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
+                                                  df_contrib_addi_ub['Substance'].unique(),
+                                                  key='substances_addi_ub_contri')
+
+              # Convertir la valeur unique en liste
+              selected_substances = [contrib_option_substances_addi_ub]
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_addi_ub[df_contrib_addi_ub['Substance'].isin(selected_substances)]
+
+
+              # Filtrer les données en fonction des options sélectionnées
+              df_filtered_contrib = df_contrib_addi_ub[df_contrib_addi_ub['Substance'].isin([contrib_option_substances_addi_ub])]
+
+            # Vérifier si des substances et familles d'aliments ont été sélectionnées
+            fig = px.bar(df_filtered_contrib, x='Contribution_UB', y="Groupe d'aliments",color_discrete_sequence=['#00AC8C']) 
+            fig.update_xaxes(title="% de la contribution à l’exposition totale")
+            fig.update_yaxes(title=None)  # Supprime le titre de l'axe y
+            fig.update_layout(
+                    yaxis={'categoryorder': 'total ascending'},
+                )
+            st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
+
 
 
     
