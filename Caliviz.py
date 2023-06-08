@@ -622,6 +622,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         choix_groupe = df_hap['Groupe'].unique()
 
         with tab1:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_hap_LB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -664,6 +667,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
         with tab2:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_hap_MB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -707,6 +713,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
     
         with tab3:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_hap_UB.png')
+            st.image(image, use_column_width=True)
 
 
             col1, col2, col3 = st.columns(3)
@@ -904,6 +913,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         choix_groupe = df_per['Groupe'].unique()
 
         with tab1:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_per_LB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -946,6 +958,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
         with tab2:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_per_MB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -989,6 +1004,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
     
         with tab3:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_per_UB.png')
+            st.image(image, use_column_width=True)
 
 
             col1, col2, col3 = st.columns(3)
@@ -1046,6 +1064,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         choix_groupe = df_bro['Groupe'].unique()
 
         with tab1:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_bro_LB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -1087,6 +1108,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
         with tab2:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_bro_MB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -1130,6 +1154,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
     
         with tab3:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_bro_UB.png')
+            st.image(image, use_column_width=True)
 
 
             col1, col2, col3 = st.columns(3)
@@ -1330,6 +1357,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         choix_groupe = df_addi['Groupe'].unique()
 
         with tab1:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_addi_LB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -1375,6 +1405,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
             st.plotly_chart(fig, use_container_width=True, sharing='streamlit')
 
         with tab2:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_addi_MB.png')
+            st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
     
@@ -1422,6 +1455,9 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
 
     
         with tab3:
+            st.markdown("")
+            image = Image.open('Heatmap/Heatmap_addi_UB.png')
+            st.image(image, use_column_width=True)
 
 
             col1, col2, col3 = st.columns(3)
