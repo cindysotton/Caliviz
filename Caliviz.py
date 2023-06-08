@@ -1359,7 +1359,6 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
         with tab1:
             st.markdown("")
             image = Image.open('Heatmap/Heatmap_addi_LB.png')
-            image = image.resize((633, 563))
             st.image(image, use_column_width=True)
 
             col1, col2, col3 = st.columns(3)
