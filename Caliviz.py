@@ -645,7 +645,7 @@ Pour pouvoir exploiter ces données non chiffrées, différentes hypothèses peu
                 #Groupe
                 choix_groupe = df_hap_ali['Groupe'].unique().astype(str).tolist()
                 # Définir la valeur par défaut
-                valeur_par_defaut = "substances_UB_hap"
+                valeur_par_defaut = "Poissons"
                 # Trouver l'index correspondant à la valeur par défaut
                 index_valeur_par_defaut = choix_groupe.index(valeur_par_defaut)
                 groupe_LB_hap= st.selectbox("Choix du groupe d'aliments", choix_groupe, index=index_valeur_par_defaut, key="groupe_LB_hap")
