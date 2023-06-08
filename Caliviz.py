@@ -1782,7 +1782,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
     col1, col2, col3, col4, col5, col6 = st.columns(6)
     
     with col2:
-        image_hypothese = Image.open('Hypotheses_Analyses.png')
+        image_hypothese = Image.open('media/Hypotheses_Analyses.png')
         width = 700
         st.image(image_hypothese, width=width)
 
