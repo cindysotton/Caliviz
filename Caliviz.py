@@ -1793,7 +1793,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
         "Choix de la famille de substances",
         ('Contaminants inorganiques et minéraux','Accrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
-    if substances == "Accrylamide":
+    if substances == "Acrylamide":
         df_contrib_accry  = (df_contrib[(df_contrib['Famille'] == 'Acrylamide')])
 
         tab1, tab2, tab3 = st.tabs(["Hypothèse Basse", "Hypothèse Moyenne","Hypothèse Haute"])
@@ -1808,7 +1808,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
               #SelectBox
               df_contrib_accry_mb = df_contrib_accry.dropna(axis = 0, how = 'all', subset = ['Contribution_MB'])
               contrib_option_substances_accry_mb = st.selectbox('Sélectionner la substance que vous souhaitez analyser :',
-                                                  "Acrylamide",
+                                                  df_contrib_accry_mb['Substance'].unique(),
                                                   key='substances_accry_mb_contri')
 
               # Convertir la valeur unique en liste
