@@ -317,7 +317,7 @@ df_contrib_LB_UB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_LB_UB.c
 # Contribution MB
 df_contrib_MB = pd.read_csv('Aliments_Contributeurs/Contribution_EAT2_MB.csv')
 # Aliments contributeurs
-df_contrib = pd.read_excel('Aliments_Contributeurs.xlsx')
+df_contrib = pd.read_excel('Aliments_Contributeurs/Aliments_Contributeurs.xlsx')
 ###
 
 #######
