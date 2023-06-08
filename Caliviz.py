@@ -1791,7 +1791,7 @@ Pour pouvoir exploiter ces données non chiffrées, deux cas de figure ont été
     with col3:
         substances = st.selectbox(
         "Choix de la famille de substances",
-        ('Contaminants inorganiques et minéraux','Accrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
+        ('Contaminants inorganiques et minéraux','Acrylamide', 'HAP', 'Dioxines, PCB','Perfluorés','Bromés','Phytoestrogènes','Mycotoxines','Additifs','Pesticides'))
 
     if substances == "Acrylamide":
         df_contrib_accry  = (df_contrib[(df_contrib['Famille'] == 'Acrylamide')])
