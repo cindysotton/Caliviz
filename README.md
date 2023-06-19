@@ -24,6 +24,8 @@ Une optimisation de la surveillance via l’identification et le ciblage des cou
 ### Méthodologie - Traitement des données
 La première étape du projet Caliviz a consisté à traiter les données inférieures aux limites de détection ou de quantification, dites données censurées, pour tenir compte des limites analytiques et des spécificités des différentes familles de substances. En fonction des substances et des groupes d’aliments pour lesquels les limites analytiques sont connues ou non, les données censurées étaient renseignées dans les fichiers sous différents formats. Par conséquent, plusieurs prétraitements spécifiques pour les différentes familles de substances ont été ainsi réalisés afin d'harmoniser l’ensemble des données qui seront ensuite intégrées à l’outil de visualisation.
 
+Accès à notre GitLab : https://gitlab.com/data-challenge-gd4h/caliviz
+
 #### Formatage de type 1 : Contaminants inorganiques et minéraux - Acrylamide
 
 Dans ce cas, les données censurées sont uniquement sous la forme “ND/NQ” et les limites analytiques sont connues. La contamination de chaque aliment par chaque substance est estimée en fonction des hypothèses de censure comme suit:
